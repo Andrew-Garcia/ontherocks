@@ -136,10 +136,15 @@ public class KinematicPlayer : MonoBehaviour
             velocity.y = jumpForce;
 			lastJumpTime = Time.time;
 		}
-        else
+		else if (Input.GetButtonUp(getPlayerKey("Jump")))
+		{
+			if (velocity.y > 0) velocity.y = velocity.y * 0.5f;
+		}
+		else
         {
             anim.SetBool("IsBackflipping", false);
         }
+
         if (Input.GetButtonDown(getPlayerKey("Punch")))
 		{
             if (shouldGrab && !grabbedRock)
@@ -167,10 +172,10 @@ public class KinematicPlayer : MonoBehaviour
 
 		grounded = false;
 
-		Vector2 move = Vector2.right * deltaPosition;
-		Move(move, false); // horizontal movement
-		move = Vector2.up * deltaPosition;
+		Vector2 move = Vector2.up * deltaPosition;
 		Move(move, true);  // vertical movement
+		move = Vector2.right * deltaPosition;
+		Move(move, false); // horizontal movement
 
 		onWall = Physics2D.OverlapCircle(wallChecker.position, 0.25f, groundLayer);
 
@@ -219,14 +224,30 @@ public class KinematicPlayer : MonoBehaviour
 
 			for (int i = 0; i < hitBufferList.Count; i++)
 			{
-				if (yMove && !stunned)
+				if (!stunned)
 				{
-					if (hitBufferList[i].normal.y > 0.9f)
+					if (yMove)
 					{
-						grounded = true;
-					}
+						if (hitBufferList[i].normal.y > 0.9f)
+						{
+							grounded = true;
+						}
 
-					velocity.y = 0;
+						velocity.y = 0;
+					}
+					else
+					{
+						if (grounded)
+						{
+							RaycastHit2D[] results = new RaycastHit2D[16];
+							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.3f, 1f);
+
+							int stepUpColliders = rb2d.Cast(direction, results, direction.magnitude);
+
+							if (stepUpColliders == 1 && results[0].collider == hitBufferList[i].collider)
+								rb2d.position = rb2d.position + direction;
+						}
+					}
 				}
 
 				float modifiedDistance = hitBufferList[i].distance - shellRadius;

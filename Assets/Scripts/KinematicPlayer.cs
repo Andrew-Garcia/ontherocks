@@ -237,9 +237,9 @@ public class KinematicPlayer : MonoBehaviour
 					}
 					else
 					{
-						/*
 						if (grounded)
 						{
+							/*
 							RaycastHit2D[] results = new RaycastHit2D[16];
 							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.3f, 1f);
 
@@ -247,8 +247,18 @@ public class KinematicPlayer : MonoBehaviour
 
 							if (stepUpColliders == 1 && results[0].collider == hitBufferList[i].collider)
 								rb2d.position = rb2d.position + direction;
+							*/
+							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.9f, 1);
+
+							//Debug.DrawRay(transform.position + Vector3.up * 0.5f, direction, Color.red, 5f);
+
+							RaycastHit2D[] results = new RaycastHit2D[16];
+							ContactFilter2D cf = new ContactFilter2D();
+							int stepUpColliders = Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(-hitBuffer[i].normal.x) * 0.5f, 0.5f), 
+								Vector2.right * -hitBuffer[i].normal.x, cf, results, 0.9f);
+
+							if (stepUpColliders == 0) rb2d.position = rb2d.position + direction;
 						}
-						*/
 					}
 				}
 

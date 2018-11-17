@@ -237,6 +237,7 @@ public class KinematicPlayer : MonoBehaviour
 					}
 					else
 					{
+						/*
 						if (grounded)
 						{
 							RaycastHit2D[] results = new RaycastHit2D[16];
@@ -247,6 +248,7 @@ public class KinematicPlayer : MonoBehaviour
 							if (stepUpColliders == 1 && results[0].collider == hitBufferList[i].collider)
 								rb2d.position = rb2d.position + direction;
 						}
+						*/
 					}
 				}
 

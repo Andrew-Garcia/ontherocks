@@ -63,6 +63,10 @@ public class KinematicPlayer : MonoBehaviour
 
 	bool onlyOnce;
 
+    //Animation Variables
+    bool isPunching;
+    bool lastFacingLeft;
+
 	private bool facingLeft
 	{
 		get
@@ -100,7 +104,8 @@ public class KinematicPlayer : MonoBehaviour
 		getAimingDirection();
 
 		contactFilter.useTriggers = false;
-	}
+        lastFacingLeft = facingLeft_;
+    }
 
 	string getPlayerKey(string keyName)
 	{
@@ -109,28 +114,48 @@ public class KinematicPlayer : MonoBehaviour
 
 	private void Update()
 	{
-		if (!stunned) velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
+        bool nowFacingLeft = facingLeft_;
+
+        if (!stunned) velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
 
 		if ((((grounded || !doubleJumped) && lastJumpTime + jumpTimer < Time.time) 
 			|| coyoteTime + coyoteTimer > Time.time) 
 			&& Input.GetButtonDown(getPlayerKey("Jump")))
 		{
-			if (coyoteTime + 0.1f > Time.time) doubleJumped = false;
-			else doubleJumped = !grounded;
-
-			velocity.y = jumpForce;
+            if (coyoteTime + 0.1f > Time.time) doubleJumped = false;
+            else
+            {
+                doubleJumped = !grounded;
+                if (nowFacingLeft != lastFacingLeft)
+                {
+                    anim.SetBool("IsBackflipping", true);
+                    Debug.Log("backflip! last facing left? " + lastFacingLeft + ". Now facing left? " + nowFacingLeft) ;
+                }
+            }
+            lastFacingLeft = nowFacingLeft;
+            velocity.y = jumpForce;
 			lastJumpTime = Time.time;
 		}
-
-		if (Input.GetButtonDown(getPlayerKey("Punch")))
+        else
+        {
+            anim.SetBool("IsBackflipping", false);
+        }
+        if (Input.GetButtonDown(getPlayerKey("Punch")))
 		{
-			if (shouldGrab && !grabbedRock)
-				Grab();
-			else
-				Punch();
-		}
+            if (shouldGrab && !grabbedRock)
+                Grab();
+            else
+            {
+                Punch();
+            }
+        }
+        else
+        {
+            anim.SetBool("IsPunching", false);
+        }
 
-		if (grounded) anim.SetFloat("Velocity", Mathf.Abs(velocity.x));
+
+        if (grounded) anim.SetFloat("Velocity", Mathf.Abs(velocity.x));
 	}
 
 	void FixedUpdate () 
@@ -367,9 +392,56 @@ public class KinematicPlayer : MonoBehaviour
 		Physics2D.IgnoreCollision(GetComponent<Collider2D>(), rockScript.c2d);
 
 		rockScript.getPushed(getAimingDirection());
-		if (grounded) anim.SetTrigger("Punch");
-		else anim.SetTrigger("Punch_air");
-		return true;
+
+        float punchAngleY = aimingDirection.y;
+        bool aimingUp = false;
+        bool aimingDown = false;
+        bool aimingSide = false;
+        Debug.Log("punchIsRunning");
+        anim.SetBool("IsPunching", true);
+        if (aimingDirection.y > 0.5f)
+        {
+            aimingUp = true;
+        }
+        else
+        {
+            aimingUp = false;
+        }
+        if (aimingDirection.y < -0.5f)
+        {
+            aimingDown = true;
+        }
+        else
+        {
+            aimingDown = false;
+        }
+        if (aimingDirection.x > 0.5f || aimingDirection.x < -0.5f)
+        {
+            aimingSide = true;
+        }
+        else
+        {
+            aimingSide = false;
+        }
+
+        if (grounded)
+        {
+            anim.SetBool("PunchUp", aimingUp && !aimingSide);
+            anim.SetBool("PunchDiagonal", aimingUp && aimingSide);
+            anim.SetBool("PunchHorizontal", !aimingUp);
+        }
+        else
+        {
+            anim.SetBool("AirPunchUp", aimingUp && !aimingSide);
+            anim.SetBool("AirPunchDiagonalUp", aimingUp && aimingSide);
+            anim.SetBool("AirPunchDiagonalDown", aimingDown && aimingSide);
+            anim.SetBool("AirPunchDown", aimingDown && !aimingSide);
+            anim.SetBool("AirPunchHorizontal", !aimingDown && !aimingUp);
+        }
+
+        //if (grounded) anim.SetTrigger("Punch");
+        //else anim.SetTrigger("Punch_air");
+        return true;
 	}
 
 	public void GetHit(Vector2 direction)
@@ -381,12 +453,14 @@ public class KinematicPlayer : MonoBehaviour
 	{
 		//Debug.DrawRay(transform.position, direction.normalized * 5f, Color.red, 3f);
 		stunned = true;
+        anim.SetBool("IsStunned", true);
 		velocity = direction * 0.3f;
 
 		yield return new WaitForSeconds(stunTime);
 
 		stunned = false;
-	}
+        anim.SetBool("IsStunned", false);
+    }
 
 	public void PlayerDie()
 	{

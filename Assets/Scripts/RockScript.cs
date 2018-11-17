@@ -167,8 +167,6 @@ public class RockScript : MonoBehaviour {
 		rb2d.velocity = pushSpeed * direction;
 		c2d.isTrigger = false;
 		timePushed = Time.time;
-
-		if (otherObject) otherObject.DestoryObject();
 	}
 
 	public bool getGrabbed(KinematicPlayer script) {

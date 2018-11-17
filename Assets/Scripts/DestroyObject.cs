@@ -19,6 +19,5 @@ public class DestroyObject : MonoBehaviour
 
 		child.parent = parent;
 		Destroy(objectToDestroy);
-		Destroy(this);
 	}
 }

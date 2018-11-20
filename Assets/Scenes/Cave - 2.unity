@@ -3598,6 +3598,21 @@ Prefab:
       propertyPath: focusTargets.Array.data[1]
       value: 
       objectReference: {fileID: 515038122}
+    - target: {fileID: 20318667780949486, guid: 6457c5c80de5cdf469fe17a6b03f7a14,
+        type: 2}
+      propertyPath: m_BackGroundColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20318667780949486, guid: 6457c5c80de5cdf469fe17a6b03f7a14,
+        type: 2}
+      propertyPath: m_BackGroundColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20318667780949486, guid: 6457c5c80de5cdf469fe17a6b03f7a14,
+        type: 2}
+      propertyPath: m_BackGroundColor.b
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6457c5c80de5cdf469fe17a6b03f7a14, type: 2}
   m_IsPrefabAsset: 0

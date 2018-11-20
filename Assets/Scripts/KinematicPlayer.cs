@@ -132,7 +132,6 @@ public class KinematicPlayer : MonoBehaviour
                 if (nowFacingLeft != lastFacingLeft)
                 {
                     anim.SetBool("IsBackflipping", true);
-                    Debug.Log("backflip! last facing left? " + lastFacingLeft + ". Now facing left? " + nowFacingLeft) ;
                 }
             }
             lastFacingLeft = nowFacingLeft;

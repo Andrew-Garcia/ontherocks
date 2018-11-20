@@ -218,12 +218,4 @@ public class RockScript : MonoBehaviour {
 		Destroy(gameObject);
 		AudioSource.PlayClipAtPoint(destroySound, transform.position, 10f);
 	}
-
-	private void OnDrawGizmosSelected()
-	{
-		UnityEditor.Handles.color = Color.green;
-		UnityEditor.Handles.DrawWireDisc(new Vector2(transform.position.x, transform.position.y) + GetComponent<Collider2D>().offset, Vector3.back, smallForceRadius);
-		UnityEditor.Handles.color = Color.yellow;
-		UnityEditor.Handles.DrawWireDisc(new Vector2(transform.position.x, transform.position.y) + GetComponent<Collider2D>().offset, Vector3.back, constantForceRadius);
-	}
 }

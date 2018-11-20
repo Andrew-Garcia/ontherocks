@@ -421,7 +421,6 @@ public class KinematicPlayer : MonoBehaviour
 
 		rockScript.getPushed(getAimingDirection());
 
-        float punchAngleY = aimingDirection.y;
         bool aimingUp = false;
         bool aimingDown = false;
         bool aimingSide = false;

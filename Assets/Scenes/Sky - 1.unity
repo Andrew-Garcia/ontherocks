@@ -7858,6 +7858,31 @@ Prefab:
       propertyPath: m_Avatar
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 61898952312936614, guid: ea86b75e1def14afc97195c6e24373ab,
+        type: 2}
+      propertyPath: m_SpriteTilingProperty.oldSize.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 61898952312936614, guid: ea86b75e1def14afc97195c6e24373ab,
+        type: 2}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114661991767840912, guid: ea86b75e1def14afc97195c6e24373ab,
+        type: 2}
+      propertyPath: selectedRockTimer
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114661991767840912, guid: ea86b75e1def14afc97195c6e24373ab,
+        type: 2}
+      propertyPath: jumpForce
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 114661991767840912, guid: ea86b75e1def14afc97195c6e24373ab,
+        type: 2}
+      propertyPath: gravityModifier
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea86b75e1def14afc97195c6e24373ab, type: 2}
   m_IsPrefabAsset: 0

@@ -16,8 +16,8 @@ public class WinnerScript : MonoBehaviour {
 		while (true) {
 			yield return new WaitForSeconds(updateTime);
 			transform.position = new Vector2(
-				Random.Range(0, Screen.width - size.x),
-				Random.Range(0, Screen.height - size.y)
+				Random.Range(0, Screen.width),
+				Random.Range(0, Screen.height)
 			);
 		}
 	}

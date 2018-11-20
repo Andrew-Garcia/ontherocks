@@ -101,7 +101,7 @@ public class GameController : MonoBehaviour {
         --playerLives[playerIndex];
 
 		if (playerLives[otherPlayerIndex] == 0) {
-			Time.fixedDeltaTime = 0.02f;
+			//Time.fixedDeltaTime = 0.02f;
 			Time.timeScale = 1;
 			SceneManager.LoadScene(scenes[Random.Range(0, scenes.Length)]);
 		}

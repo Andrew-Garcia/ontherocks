@@ -52,6 +52,10 @@ public class KinematicPlayer : MonoBehaviour
 	public float jumpTimer = 0.15f;
 	public float coyoteTimer = 0.1f;
 
+	[Header("Rock Jump")]
+	public int rockJumpFrames = 10;
+	public float rockJumpDistance = 5f;
+
 	[Header("References")]
 	public LayerMask groundLayer;
 	public Transform wallChecker;
@@ -117,10 +121,14 @@ public class KinematicPlayer : MonoBehaviour
 
 	private void Update()
 	{
-        bool nowFacingLeft = facingLeft_;
+		if (Input.GetButtonDown(getPlayerKey("Punch")) && Input.GetButtonDown(getPlayerKey("RockMod"))) Debug.Log("same frame");
 
+		bool nowFacingLeft = facingLeft_;
+
+		// set horizontal velocity
         if (!stunned) velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
 
+		// jump and double jump input
 		if ((((grounded || !doubleJumped) && lastJumpTime + jumpTimer < Time.time) 
 			|| coyoteTime + coyoteTimer > Time.time) 
 			&& Input.GetButtonDown(getPlayerKey("Jump")))
@@ -140,6 +148,7 @@ public class KinematicPlayer : MonoBehaviour
 		}
 		else if (Input.GetButtonUp(getPlayerKey("Jump")))
 		{
+			//Debug.Log("jump up");
 			if (velocity.y > 0) velocity.y = velocity.y * 0.5f;
 		}
 		else
@@ -147,7 +156,8 @@ public class KinematicPlayer : MonoBehaviour
             anim.SetBool("IsBackflipping", false);
         }
 
-        if (Input.GetButtonDown(getPlayerKey("Punch")))
+		// punch input
+        if (Input.GetButtonDown(getPlayerKey("Punch")) && Input.GetButton(getPlayerKey("RockMod")))
 		{
             if (shouldGrab && !grabbedRock)
                 Grab();
@@ -161,6 +171,12 @@ public class KinematicPlayer : MonoBehaviour
             anim.SetBool("IsPunching", false);
         }
 
+		// rock jump input
+		if (Input.GetButtonDown(getPlayerKey("Jump")) && Input.GetButton(getPlayerKey("RockMod")))
+		{
+			if (grabbedRock) StartCoroutine(RockJump());
+			else Debug.Log("no rock");
+		}
 
         if (grounded) anim.SetFloat("Velocity", Mathf.Abs(velocity.x));
 	}
@@ -241,6 +257,7 @@ public class KinematicPlayer : MonoBehaviour
 					{
 						if (grounded)
 						{
+							// position to step up to
 							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.45f, 1f);
 
 							RaycastHit2D[] results = new RaycastHit2D[16];
@@ -249,9 +266,12 @@ public class KinematicPlayer : MonoBehaviour
 							cf.useLayerMask = true;
 							cf.layerMask = ~LayerMask.GetMask("PlayerLayer");
 
+							// BUG HERE - might have to change to some rb2d cast, cause you can step up into blocks.
+							// if we run into a block on the side and there is an empty space above it...
 							int stepUpColliders = Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(-hitBuffer[i].normal.x) * 0.5f, 0.5f), 
 								Vector2.right * -hitBuffer[i].normal.x, cf, results, 0.9f);
 
+							// step up
 							if (stepUpColliders == 0) rb2d.position = rb2d.position + direction;
 						}
 					}
@@ -262,7 +282,6 @@ public class KinematicPlayer : MonoBehaviour
 			}
 		}
 
-		//Debug.DrawRay(transform.position, move.normalized * distance, Color.white, 2f);
 		rb2d.position = rb2d.position + move.normalized * distance;
 	}
 
@@ -405,8 +424,7 @@ public class KinematicPlayer : MonoBehaviour
 			if (rockScript)
 			{
 				Vector2 rockPos = new Vector2(rockScript.transform.position.x, rockScript.transform.position.y);
-				//Debug.DrawRay(rockPos + rockScript.c2d.offset, getAimingDirection(), Color.red, 5f);
-
+				
 				if (Physics2D.Raycast(rockPos + rockScript.c2d.offset, getAimingDirection(), rockScript.isBig ? 2f : 1f, groundLayer))
 				{
 					rockScript.destroyOther = false;
@@ -469,6 +487,58 @@ public class KinematicPlayer : MonoBehaviour
         //if (grounded) anim.SetTrigger("Punch");
         //else anim.SetTrigger("Punch_air");
         return true;
+	}
+
+	IEnumerator RockJump()
+	{
+		Vector3 direction = Vector3.up;
+
+		int i = 0;
+		while (i < rockJumpFrames)
+		{
+			// freeze position ?
+			velocity = Vector2.zero;
+
+			direction = getRockJumpDirection();
+			i++;
+			yield return null;
+		}
+
+		ContactFilter2D cf = new ContactFilter2D();
+
+		cf.useLayerMask = true;
+		cf.layerMask = ~LayerMask.GetMask("NoColLayer");
+
+		RaycastHit2D[] hitArray = new RaycastHit2D[16];
+		int hitCount = rb2d.Cast(direction, cf, hitArray);
+
+		float distance = rockJumpDistance;
+		for (int j = 0; j < hitCount; j++)
+		{
+			float modifiedDistance = hitArray[j].distance;
+			distance = modifiedDistance < distance ? modifiedDistance : distance;
+		}
+
+		// put function in rockscript to destroy and play particles
+		Destroy(grabbedRock.gameObject);
+		rb2d.position = rb2d.position + (Vector2)(distance * direction);
+
+	}
+
+	Vector3 getRockJumpDirection()
+	{
+		Vector2 newDirection = new Vector2(Input.GetAxisRaw(getPlayerKey("Horizontal")),
+											Input.GetAxisRaw(getPlayerKey("Vertical")));
+		if (newDirection.magnitude > 0.2f)
+		{
+			aimingDirection = newDirection.normalized;
+		}
+		else 
+		{
+			aimingDirection = Vector3.up;
+		}
+
+		return aimingDirection;
 	}
 
 	public void GetHit(Vector2 direction)

@@ -68,7 +68,6 @@ GameObject:
   - component: {fileID: 50806330591117342}
   - component: {fileID: 61898952312936614}
   - component: {fileID: 95158973285729666}
-  - component: {fileID: 114725110429718486}
   - component: {fileID: 114661991767840912}
   m_Layer: 9
   m_Name: Player2
@@ -123,7 +122,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1905370455827948}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.31, y: -11.6, z: 0}
+  m_LocalPosition: {x: 4.64, y: -2.62, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4170250721874796}
@@ -209,33 +208,21 @@ MonoBehaviour:
   playerNumber: 2
   deathClip: {fileID: 8300000, guid: 0af41e8082ce64f6593d672b47d973d7, type: 3}
   stunTime: 0.5
-  selectedRockTimer: 0.25
+  selectedRockTimer: 0.2
   speed: 12
-  jumpForce: 35
-  gravityModifier: 12
+  jumpForce: 36
+  gravityModifier: 10
   shellRadius: 0.01
   jumpTimer: 0.3
   coyoteTimer: 0.3
+  rockJumpFrames: 10
+  rockJumpDistance: 10
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
   wallChecker: {fileID: 4170250721874796}
   rayOrigin: {fileID: 4170680461037868}
   grabbedRocksPosition: {fileID: 4405870894078722}
---- !u!114 &114725110429718486
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1905370455827948}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 807f8d2bf0831224f8b2f509fa2f073f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Influence: {x: 1, y: 1}
-  m_DrawDebug: 0
-  m_Offset: {x: 0, y: 0}
 --- !u!212 &212782045454106448
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -128,6 +128,8 @@ public class KinematicPlayer : MonoBehaviour
 		// set horizontal velocity
         if (!stunned) velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
 
+		//Debug.Log(Input.GetAxisRaw(getPlayerKey("Horizontal")));
+
 		// jump and double jump input
 		if ((((grounded || !doubleJumped) && lastJumpTime + jumpTimer < Time.time) 
 			|| coyoteTime + coyoteTimer > Time.time) 
@@ -157,7 +159,7 @@ public class KinematicPlayer : MonoBehaviour
         }
 
 		// punch input
-        if (Input.GetButtonDown(getPlayerKey("Punch")) && Input.GetButton(getPlayerKey("RockMod")))
+        if (Input.GetButtonDown(getPlayerKey("Punch")))
 		{
             if (shouldGrab && !grabbedRock)
                 Grab();
@@ -178,13 +180,16 @@ public class KinematicPlayer : MonoBehaviour
 			else Debug.Log("no rock");
 		}
 
+		if (Input.GetButton(getPlayerKey("RockMod")) && grounded)
+		{
+			velocity = Vector2.zero;
+		}
+
         if (grounded) anim.SetFloat("Velocity", Mathf.Abs(velocity.x));
 	}
 
 	void FixedUpdate () 
 	{
-		// ! NEED TO ACCOUNT FOR THE FEW CASES WHERE YOU SPAWN IN SOMETHING !
-
 		velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
 		Vector2 deltaPosition = velocity * Time.deltaTime;
 

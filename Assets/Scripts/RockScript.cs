@@ -8,6 +8,7 @@ public class RockScript : MonoBehaviour {
 		FIXED,
 		HELD,
 		PUSHED,
+		SCRIPTMOVE,
 	}
 
 	public bool isBig;
@@ -16,6 +17,7 @@ public class RockScript : MonoBehaviour {
 	private float timePushed = 0;
 	public int highlighted_ = 0;
 
+	[Header("Properties")]
 	[SerializeField] AudioClip destroySound;
 	public Sprite[] spritePool;
 	public bool randomSprite;
@@ -31,6 +33,9 @@ public class RockScript : MonoBehaviour {
 	public float smallForce;
 	public float constForce;
 	public float destroyTime;
+
+	[Header("Particles")]
+	public GameObject jumpDestroyParticles;
 
     private Color startColor;
 	private Rigidbody2D rb2d;
@@ -80,21 +85,22 @@ public class RockScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (currentState == state.HELD) {
+		if (currentState == state.HELD)
+		{
 			if (!owner)
 			{
 				Destroy(gameObject);
 				return;
 			}
-			
+
 			Vector3 centerPosition = c2d.offset;
 			centerPosition += transform.position;
 
-            Vector2 direction = (owner.grabbedRocksPosition.position - centerPosition).normalized;
+			Vector2 direction = (owner.grabbedRocksPosition.position - centerPosition).normalized;
 			float distance = Vector2.Distance(centerPosition, owner.grabbedRocksPosition.position);
-            rb2d.velocity = direction * grabbedSpeed * distance;
+			rb2d.velocity = direction * grabbedSpeed * distance;
 		}
-
+		
 		if (currentState == state.PUSHED)
 		{
 			Vector3 centerPosition = c2d.offset;
@@ -114,7 +120,7 @@ public class RockScript : MonoBehaviour {
 						onlyOnce = true;
 					}
 				}
-				else 
+				else
 				{
 					if (aimAssistTarget[i].CompareTag("Player") && !onlyOnce)
 					{
@@ -137,7 +143,7 @@ public class RockScript : MonoBehaviour {
 						rb2d.velocity = rb2d.velocity.normalized * pushSpeed;
 					}
 				}
-				else 
+				else
 				{
 					if (aimAssistTarget[i].CompareTag("Player"))
 					{
@@ -146,6 +152,12 @@ public class RockScript : MonoBehaviour {
 					}
 				}
 			}
+		}
+
+		if (currentState == state.SCRIPTMOVE)
+		{
+			rb2d.velocity = Vector2.zero;
+			//gameObject.layer = noColLayer;
 		}
 
 		if (timePushed != 0 && timePushed + destroyTime < Time.time)
@@ -186,6 +198,14 @@ public class RockScript : MonoBehaviour {
 
 	public Vector2 getTop() {
 		return new Vector2(transform.position.x + c2d.offset.x, transform.position.y + 0.1f);
+	}
+
+	public void JumpDestroy(Vector2 direction)
+	{
+		Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction);
+		Debug.DrawRay(transform.position, rotation * Vector3.down, Color.red, 10f);
+		Instantiate(jumpDestroyParticles, transform.position, rotation);
+		Destroy(gameObject);
 	}
 
 	IEnumerator DestroyNextFrame() {

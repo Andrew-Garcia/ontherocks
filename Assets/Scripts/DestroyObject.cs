@@ -5,12 +5,6 @@ using UnityEngine;
 public class DestroyObject : MonoBehaviour 
 {
 	public GameObject objectToDestroy;
-	RockScript attachedRock;
-	
-	void Start () 
-	{
-		attachedRock = GetComponent<RockScript>();
-	}
 	
 	public void DestoryObject() 
 	{

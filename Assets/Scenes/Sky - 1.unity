@@ -3061,7 +3061,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 2045880, guid: 00655ab05886f9341a63e33ffd2001a2, type: 2}
       propertyPath: m_CullingMask.m_Bits
-      value: 4294967295
+      value: 8192
       objectReference: {fileID: 0}
     - target: {fileID: 11414868, guid: 00655ab05886f9341a63e33ffd2001a2, type: 2}
       propertyPath: _cellSize
@@ -3209,7 +3209,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1146674475734770, guid: 8ddba7a671f494b42973f02cb2d247dd, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ddba7a671f494b42973f02cb2d247dd, type: 2}

@@ -15,6 +15,7 @@ public class KinematicPlayer : MonoBehaviour
 	bool onWall;
 
 	bool stunned = false;
+	bool freezePosition = false;
 
 	Rigidbody2D rb2d;
 	Vector2 velocity;
@@ -67,6 +68,8 @@ public class KinematicPlayer : MonoBehaviour
 
 	bool onlyOnce;
 
+	ContactFilter2D rockContactFilter;
+
     //Animation Variables
     bool isPunching;
     bool lastFacingLeft;
@@ -111,7 +114,11 @@ public class KinematicPlayer : MonoBehaviour
 		contactFilter.useLayerMask = true;
 		contactFilter.layerMask = ~LayerMask.GetMask("PlayerLayer");
 
-        lastFacingLeft = facingLeft_;
+		rockContactFilter.useTriggers = false;
+		rockContactFilter.useLayerMask = true;
+		rockContactFilter.layerMask = ~(LayerMask.GetMask("PlayerLayer") & LayerMask.GetMask("NoColLayer"));
+
+		lastFacingLeft = facingLeft_;
     }
 
 	string getPlayerKey(string keyName)
@@ -195,10 +202,13 @@ public class KinematicPlayer : MonoBehaviour
 
 		grounded = false;
 
-		Vector2 move = Vector2.up * deltaPosition;
-		Move(move, true);  // vertical movement
-		move = Vector2.right * deltaPosition;
-		Move(move, false); // horizontal movement
+		if (!freezePosition)
+		{
+			Vector2 move = Vector2.up * deltaPosition;
+			Move(move, true);  // vertical movement
+			move = Vector2.right * deltaPosition;
+			Move(move, false); // horizontal movement
+		}
 
 		onWall = Physics2D.OverlapCircle(wallChecker.position, 0.25f, groundLayer);
 
@@ -266,15 +276,11 @@ public class KinematicPlayer : MonoBehaviour
 							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.45f, 1f);
 
 							RaycastHit2D[] results = new RaycastHit2D[16];
-							ContactFilter2D cf = new ContactFilter2D();
-
-							cf.useLayerMask = true;
-							cf.layerMask = ~LayerMask.GetMask("PlayerLayer");
 
 							// BUG HERE - might have to change to some rb2d cast, cause you can step up into blocks.
 							// if we run into a block on the side and there is an empty space above it...
 							int stepUpColliders = Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(-hitBuffer[i].normal.x) * 0.5f, 0.5f), 
-								Vector2.right * -hitBuffer[i].normal.x, cf, results, 0.9f);
+								Vector2.right * -hitBuffer[i].normal.x, rockContactFilter, results, 0.9f);
 
 							// step up
 							if (stepUpColliders == 0) rb2d.position = rb2d.position + direction;
@@ -494,54 +500,55 @@ public class KinematicPlayer : MonoBehaviour
         return true;
 	}
 
+	// ! NEED TO FIX THE OVERLAP WITH THE NORMAL JUMP MECHANIC... !
 	IEnumerator RockJump()
 	{
 		Vector3 direction = Vector3.up;
 
 		int i = 0;
+
+		// not fixed, but moving to a specific spot
+		grabbedRock.currentState = RockScript.state.SCRIPTMOVE;
+
+		Vector3 rockEnd = transform.position - (grabbedRock.isBig ? new Vector3(1f, 1.375f) 
+			: new Vector3(0.5f, 0.875f));
+
+		Vector3 rockStart = grabbedRock.transform.position;
+
+		// get direction to jump to, and bring rock to it
+		freezePosition = true;
 		while (i < rockJumpFrames)
 		{
-			// freeze position ?
-			velocity = Vector2.zero;
-
+			grabbedRock.transform.position = Vector3.Lerp(rockStart, rockEnd, (float)i * 2/ rockJumpFrames);
 			direction = getRockJumpDirection();
 			i++;
 			yield return null;
 		}
+		freezePosition = false;
 
-		ContactFilter2D cf = new ContactFilter2D();
+		grabbedRock.JumpDestroy(direction);
 
-		cf.useLayerMask = true;
-		cf.layerMask = ~LayerMask.GetMask("NoColLayer");
-
+		// cast collider to the end point
 		RaycastHit2D[] hitArray = new RaycastHit2D[16];
-		int hitCount = rb2d.Cast(direction, cf, hitArray);
+		int hitCount = rb2d.Cast(direction, rockContactFilter, hitArray);
 
 		float distance = rockJumpDistance;
 		for (int j = 0; j < hitCount; j++)
 		{
-			float modifiedDistance = hitArray[j].distance;
+			float modifiedDistance = hitArray[j].distance + shellRadius;
 			distance = modifiedDistance < distance ? modifiedDistance : distance;
 		}
-
-		// put function in rockscript to destroy and play particles
-		Destroy(grabbedRock.gameObject);
+		
 		rb2d.position = rb2d.position + (Vector2)(distance * direction);
-
 	}
 
 	Vector3 getRockJumpDirection()
 	{
 		Vector2 newDirection = new Vector2(Input.GetAxisRaw(getPlayerKey("Horizontal")),
 											Input.GetAxisRaw(getPlayerKey("Vertical")));
-		if (newDirection.magnitude > 0.2f)
-		{
-			aimingDirection = newDirection.normalized;
-		}
-		else 
-		{
-			aimingDirection = Vector3.up;
-		}
+
+		if (newDirection.magnitude > 0.2f) aimingDirection = newDirection.normalized;
+		else aimingDirection = Vector3.up;
 
 		return aimingDirection;
 	}
@@ -553,7 +560,6 @@ public class KinematicPlayer : MonoBehaviour
 
 	IEnumerator Stun(Vector2 direction)
 	{
-		//Debug.DrawRay(transform.position, direction.normalized * 5f, Color.red, 3f);
 		stunned = true;
         anim.SetBool("IsStunned", true);
 		velocity = direction * 0.3f;
@@ -572,12 +578,6 @@ public class KinematicPlayer : MonoBehaviour
 		AudioSource.PlayClipAtPoint(deathClip, transform.position, 10f);
 		Destroy(gameObject);
 	}
-
-	/// <summary>
-	/// Sent when an incoming collider makes contact with this object's
-	/// collider (2D physics only).
-	/// </summary>
-	/// <param name="other">The Collision2D data associated with this collision.</param>
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{

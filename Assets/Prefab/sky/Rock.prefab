@@ -191,8 +191,11 @@ MonoBehaviour:
   smallForceRadius: 5
   constantForceRadius: 15
   smallForce: 100
-  constantForce: 20
+  constForce: 0
   destroyTime: 3
+  jumpDestroyParticles: {fileID: 1050860254931514, guid: 5addbf2f46a1f544893ab742dd2503cd,
+    type: 2}
+  destroyOther: 0
   contactFilter:
     useTriggers: 0
     useLayerMask: 1
@@ -208,6 +211,7 @@ MonoBehaviour:
     minNormalAngle: 0
     maxNormalAngle: 0
   c2d: {fileID: 0}
+  otherObject: {fileID: 0}
 --- !u!212 &212084217293316832
 SpriteRenderer:
   m_ObjectHideFlags: 1

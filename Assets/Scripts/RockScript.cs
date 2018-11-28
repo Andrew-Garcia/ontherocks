@@ -203,7 +203,7 @@ public class RockScript : MonoBehaviour {
 	public void JumpDestroy(Vector2 direction)
 	{
 		Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction);
-		Debug.DrawRay(transform.position, rotation * Vector3.down, Color.red, 10f);
+		//Debug.DrawRay(transform.position, rotation * Vector3.down, Color.red, 10f);
 		Instantiate(jumpDestroyParticles, transform.position, rotation);
 		Destroy(gameObject);
 	}

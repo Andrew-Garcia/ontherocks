@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class KinematicPlayer : MonoBehaviour 
 {
+	public enum PlayerState
+	{
+		MOVE,
+		ROCKJUMP,
+	}
+
 	bool grounded;
 	bool lastGrounded;
 
@@ -19,6 +25,7 @@ public class KinematicPlayer : MonoBehaviour
 
 	Rigidbody2D rb2d;
 	Vector2 velocity;
+	BoxCollider2D col;
 
 	RaycastHit2D[] hitBuffer = new RaycastHit2D[16];
 	List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
@@ -54,8 +61,9 @@ public class KinematicPlayer : MonoBehaviour
 	public float coyoteTimer = 0.1f;
 
 	[Header("Rock Jump")]
+	public int preRockJumpFrames = 10;
 	public int rockJumpFrames = 10;
-	public float rockJumpDistance = 5f;
+	public float rockJumpSpeed = 5f;
 
 	[Header("References")]
 	public LayerMask groundLayer;
@@ -73,6 +81,8 @@ public class KinematicPlayer : MonoBehaviour
     //Animation Variables
     bool isPunching;
     bool lastFacingLeft;
+
+	public PlayerState currentState = PlayerState.MOVE;
 
 	private bool facingLeft
 	{
@@ -102,6 +112,7 @@ public class KinematicPlayer : MonoBehaviour
 		rb2d = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
 		sr = GetComponent<SpriteRenderer>();
+		col = GetComponent<BoxCollider2D>();
 
 		gc = FindObjectOfType<GameController>();
 
@@ -116,7 +127,7 @@ public class KinematicPlayer : MonoBehaviour
 
 		rockContactFilter.useTriggers = false;
 		rockContactFilter.useLayerMask = true;
-		rockContactFilter.layerMask = ~(LayerMask.GetMask("PlayerLayer") & LayerMask.GetMask("NoColLayer"));
+		rockContactFilter.layerMask = ~(LayerMask.GetMask("PlayerLayer", "NoColLayer"));
 
 		lastFacingLeft = facingLeft_;
     }
@@ -128,76 +139,88 @@ public class KinematicPlayer : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetButtonDown(getPlayerKey("Punch")) && Input.GetButtonDown(getPlayerKey("RockMod"))) Debug.Log("same frame");
+		//if (Input.GetButtonDown(getPlayerKey("Punch")) && Input.GetButtonDown(getPlayerKey("RockMod"))) Debug.Log("same frame");
 
 		bool nowFacingLeft = facingLeft_;
 
-		// set horizontal velocity
-        if (!stunned && !freezePosition) velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
-
-		//Debug.Log(Input.GetAxisRaw(getPlayerKey("Horizontal")));
-
-		// jump and double jump input
-		if ((((grounded || !doubleJumped) && lastJumpTime + jumpTimer < Time.time) 
-			|| coyoteTime + coyoteTimer > Time.time) 
-			&& Input.GetButtonDown(getPlayerKey("Jump")))
+		switch (currentState) 
 		{
-            if (coyoteTime + 0.1f > Time.time) doubleJumped = false;
-            else
-            {
-                doubleJumped = !grounded;
-                if (nowFacingLeft != lastFacingLeft)
-                {
-                    anim.SetBool("IsBackflipping", true);
-                }
-            }
-            lastFacingLeft = nowFacingLeft;
-            velocity.y = jumpForce;
-			lastJumpTime = Time.time;
-		}
-		else if (Input.GetButtonUp(getPlayerKey("Jump")))
-		{
-			//Debug.Log("jump up");
-			if (velocity.y > 0) velocity.y = velocity.y * 0.5f;
-		}
-		else
-        {
-            anim.SetBool("IsBackflipping", false);
-        }
+			case PlayerState.MOVE:
+				// set horizontal velocity
+				if (!stunned) velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
 
-		// punch input
-        if (Input.GetButtonDown(getPlayerKey("Punch")))
-		{
-            if (shouldGrab && !grabbedRock)
-                Grab();
-            else
-            {
-                Punch();
-            }
-        }
-        else
-        {
-            anim.SetBool("IsPunching", false);
-        }
+				//Debug.Log(Input.GetAxisRaw(getPlayerKey("Horizontal")));
 
-		// rock jump input
-		if (Input.GetButtonDown(getPlayerKey("Jump")) && Input.GetButton(getPlayerKey("RockMod")))
-		{
-			if (grabbedRock) StartCoroutine(RockJump());
-			else Debug.Log("no rock");
-		}
+				// jump and double jump input
+				if ((((grounded || !doubleJumped) && lastJumpTime + jumpTimer < Time.time)	
+					|| coyoteTime + coyoteTimer > Time.time)
+					&& Input.GetButtonDown(getPlayerKey("Jump")))
+				{
+					if (coyoteTime + 0.1f > Time.time) doubleJumped = false;
+					else
+					{
+						doubleJumped = !grounded;
+						if (nowFacingLeft != lastFacingLeft)
+						{
+							anim.SetBool("IsBackflipping", true);
+						}
+					}
+					lastFacingLeft = nowFacingLeft;
+					velocity.y = jumpForce;
+					lastJumpTime = Time.time;
+				}
+				else if (Input.GetButtonUp(getPlayerKey("Jump")))
+				{
+					if (velocity.y > 0) velocity.y = velocity.y * 0.5f;
+				}
+				else
+				{
+					anim.SetBool("IsBackflipping", false);
+				}
+	
+				// punch input
+				if (Input.GetButtonDown(getPlayerKey("Punch")))
+				{
+						if (shouldGrab && !grabbedRock)
+						Grab();
+					else
+						Punch();
+				}
+				else
+				{
+					anim.SetBool("IsPunching", false);
+				}
 
-		if (Input.GetButton(getPlayerKey("RockMod")) && grounded)
-		{
-			velocity = Vector2.zero;
+				// rock jump input
+				if (Input.GetButtonDown(getPlayerKey("Jump")) && Input.GetButton(getPlayerKey("RockMod")))
+				{
+					if (grabbedRock) StartCoroutine(RockJump());
+					else Debug.Log("no rock");
+				}
+
+				if (Input.GetButton(getPlayerKey("RockMod")) && grounded)
+				{
+					velocity = Vector2.zero;
+				}
+
+				break;
+
+			case PlayerState.ROCKJUMP:
+				
+				break;
 		}
 
         if (grounded) anim.SetFloat("Velocity", Mathf.Abs(velocity.x));
 	}
 
-	void FixedUpdate () 
+	void FixedUpdate()
 	{
-		if (!freezePosition) velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+		switch (currentState)
+		{
+			case PlayerState.MOVE:
+				velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+				break;
+		}
 
 		Vector2 deltaPosition = velocity * Time.deltaTime;
 
@@ -248,7 +271,6 @@ public class KinematicPlayer : MonoBehaviour
 			// bounce when stunned
 			if (stunned && hitBufferList.Count > 0) 
 			{
-				//Debug.Log(velocity.magnitude);
 				if (yMove) velocity.y = Vector2.Reflect(velocity, hitBuffer[0].normal).y;
 				else velocity.x = Vector2.Reflect(velocity, hitBufferList[0].normal).x;
 			}
@@ -275,10 +297,27 @@ public class KinematicPlayer : MonoBehaviour
 
 							RaycastHit2D[] results = new RaycastHit2D[16];
 
-							// BUG HERE - might have to change to some rb2d cast, cause you can step up into blocks.
+							Debug.DrawRay(transform.position, direction, Color.black, 10f);
+
+							ContactFilter2D cf = new ContactFilter2D();
+
+							cf.useLayerMask = true;
+							cf.layerMask = ~LayerMask.GetMask("PlayerLayer");
+
 							// if we run into a block on the side and there is an empty space above it...
-							int stepUpColliders = Physics2D.Raycast(transform.position + new Vector3(Mathf.Sign(-hitBuffer[i].normal.x) * 0.5f, 0.5f), 
-								Vector2.right * -hitBuffer[i].normal.x, rockContactFilter, results, 0.9f);
+							int stepUpColliders = Physics2D.BoxCast((Vector2)transform.position + direction + col.offset, 
+								col.size, 0, Vector2.one, rockContactFilter, results, 0);
+							
+							// draw step up box
+							/*
+							Vector2 topRight = new Vector2(col.size.x / 2, col.size.y / 2) + col.offset;
+							Vector2 botLeft = new Vector2(-col.size.x / 2, -col.size.y / 2) + col.offset;
+
+							Debug.DrawRay((Vector2)transform.position + topRight + direction, Vector2.left * col.size.x, Color.red, 10f);
+							Debug.DrawRay((Vector2)transform.position + topRight + direction, Vector2.down * col.size.y, Color.red, 10f);
+							Debug.DrawRay((Vector2)transform.position + botLeft + direction, Vector2.right * col.size.x, Color.red, 10f);
+							Debug.DrawRay((Vector2)transform.position + botLeft + direction, Vector2.up * col.size.y, Color.red, 10f);
+							*/
 
 							// step up
 							if (stepUpColliders == 0) rb2d.position = rb2d.position + direction;
@@ -451,7 +490,7 @@ public class KinematicPlayer : MonoBehaviour
         bool aimingUp = false;
         bool aimingDown = false;
         bool aimingSide = false;
-        //Debug.Log("punchIsRunning");
+        
         anim.SetBool("IsPunching", true);
         if (aimingDirection.y > 0.5f)
         {
@@ -498,9 +537,10 @@ public class KinematicPlayer : MonoBehaviour
         return true;
 	}
 
-	// ! NEED TO FIX THE OVERLAP WITH THE NORMAL JUMP MECHANIC... !
 	IEnumerator RockJump()
 	{
+		currentState = PlayerState.ROCKJUMP;
+
 		Vector3 direction = Vector3.up;
 
 		int i = 0;
@@ -513,21 +553,34 @@ public class KinematicPlayer : MonoBehaviour
 
 		Vector3 rockStart = grabbedRock.transform.position;
 
-		// get direction to jump to, and bring rock to it
-		freezePosition = true;
-		while (i < rockJumpFrames)
+		// freeze current position, get direction to jump to, bring rock to under our feet
+		velocity = Vector2.zero;
+		while (i < preRockJumpFrames)
 		{
-			velocity = Vector2.zero;
-			grabbedRock.transform.position = Vector3.Lerp(rockStart, rockEnd, (float)i * 2/ rockJumpFrames);
+			grabbedRock.transform.position = Vector3.Lerp(rockStart, rockEnd, (float)i * 2/ preRockJumpFrames);
 			direction = getRockJumpDirection();
 			i++;
 			yield return null;
 		}
-		freezePosition = false;
 
 		grabbedRock.JumpDestroy(direction);
 
+		// set velocity to speed and direction of the jump
+		velocity = direction * rockJumpSpeed;
+
+		// apply velocity for rockJumpFrames
+		for (int j = 0; j < rockJumpFrames; j++)
+		{ 
+			yield return null;
+		}
+
+		// reset velocity after jump
+		velocity = Vector2.zero;
+		currentState = PlayerState.MOVE;
+
+		// change this to some velocity addition I guess. 
 		// cast collider to the end point
+		/*
 		RaycastHit2D[] hitArray = new RaycastHit2D[16];
 		int hitCount = rb2d.Cast(direction, rockContactFilter, hitArray, rockJumpDistance);
 
@@ -539,6 +592,7 @@ public class KinematicPlayer : MonoBehaviour
 		}
 		
 		rb2d.position = rb2d.position + (Vector2)(distance * direction);
+		*/
 	}
 
 	Vector3 getRockJumpDirection()

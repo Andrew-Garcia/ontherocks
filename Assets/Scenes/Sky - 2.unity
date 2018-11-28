@@ -10531,6 +10531,11 @@ Prefab:
       propertyPath: selectedRockTimer
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 114026758459305598, guid: 34fb14b628c254573a442b21797a0072,
+        type: 2}
+      propertyPath: jumpTimer
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34fb14b628c254573a442b21797a0072, type: 2}
   m_IsPrefabAsset: 0
@@ -12244,7 +12249,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1961311556483154, guid: 3699d3223b32c495c9c14f44cd65ebed, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3699d3223b32c495c9c14f44cd65ebed, type: 2}
@@ -14553,6 +14558,11 @@ Prefab:
         type: 2}
       propertyPath: gravityModifier
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 114661991767840912, guid: ea86b75e1def14afc97195c6e24373ab,
+        type: 2}
+      propertyPath: jumpTimer
+      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea86b75e1def14afc97195c6e24373ab, type: 2}

@@ -3433,7 +3433,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Hidden/postVHSPro_Tape
   m_Shader: {fileID: 4800000, guid: caea6b3daf52a4416949b7b9c0146d77, type: 3}
-  m_ShaderKeywords: VHS_TAPENOISE_ON
+  m_ShaderKeywords: VHS_FILMGRAIN_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -3678,7 +3678,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Hidden/postVHSPro_First
   m_Shader: {fileID: 4800000, guid: e5b137a48bf2c4c668927fd89b6ccbcd, type: 3}
-  m_ShaderKeywords: 
+  m_ShaderKeywords: VHS_FILMGRAIN_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -8784,7 +8784,7 @@ MonoBehaviour:
   mat_clear: {fileID: 1416188767}
   mat_tape: {fileID: 771569818}
   g_showCRT: 0
-  g_showNoise: 0
+  g_showNoise: 1
   g_showJitter: 0
   g_showSignal: 1
   g_showFeedback: 0
@@ -8885,7 +8885,7 @@ MonoBehaviour:
   noiseLinesMode: 1
   noiseLinesNum: 240
   noiseQuantizeX: 0
-  filmgrainOn: 0
+  filmgrainOn: 1
   filmGrainAmount: 0.016
   signalNoiseOn: 0
   signalNoiseAmount: 0.15

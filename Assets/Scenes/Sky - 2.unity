@@ -113,6 +113,23 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &281393 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1654383538637778, guid: 19eb2e12e3908432c8aeaa45297b1f4e,
+    type: 2}
+  m_PrefabInternal: {fileID: 1106041374}
+--- !u!114 &281394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 281393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5304fa5a2e40d84ba60aa793f5f3dd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToDestroy: {fileID: 150603935}
 --- !u!1001 &7473792
 Prefab:
   m_ObjectHideFlags: 0
@@ -5797,7 +5814,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5304fa5a2e40d84ba60aa793f5f3dd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToDestroy: {fileID: 0}
+  objectToDestroy: {fileID: 564688361}
 --- !u!1 &783682770
 GameObject:
   m_ObjectHideFlags: 0
@@ -7996,6 +8013,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 6b66028cb218c4be2ab0563c88265a6a,
     type: 2}
   m_PrefabInternal: {fileID: 703361862}
+--- !u!1 &1139920435 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1654383538637778, guid: 6b66028cb218c4be2ab0563c88265a6a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1238026453}
+--- !u!114 &1139920436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1139920435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5304fa5a2e40d84ba60aa793f5f3dd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToDestroy: {fileID: 2039903906}
 --- !u!1001 &1144024347
 Prefab:
   m_ObjectHideFlags: 0
@@ -11814,6 +11848,23 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1523723022}
   m_Mesh: {fileID: 4300002, guid: 8977499d471e9e0419c4ea0d2a570911, type: 3}
+--- !u!1 &1523797809 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1654383538637778, guid: 6b66028cb218c4be2ab0563c88265a6a,
+    type: 2}
+  m_PrefabInternal: {fileID: 745967399}
+--- !u!114 &1523797810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1523797809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5304fa5a2e40d84ba60aa793f5f3dd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToDestroy: {fileID: 1855937168}
 --- !u!1001 &1529257370
 Prefab:
   m_ObjectHideFlags: 0
@@ -14269,6 +14320,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 6b66028cb218c4be2ab0563c88265a6a,
     type: 2}
   m_PrefabInternal: {fileID: 1591516946}
+--- !u!1 &1796720815 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1654383538637778, guid: 6b66028cb218c4be2ab0563c88265a6a,
+    type: 2}
+  m_PrefabInternal: {fileID: 1144024347}
+--- !u!114 &1796720816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1796720815}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5304fa5a2e40d84ba60aa793f5f3dd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToDestroy: {fileID: 1777564656}
 --- !u!1 &1811060447
 GameObject:
   m_ObjectHideFlags: 0

@@ -133,7 +133,7 @@ public class KinematicPlayer : MonoBehaviour
 		bool nowFacingLeft = facingLeft_;
 
 		// set horizontal velocity
-        if (!stunned) velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
+        if (!stunned && !freezePosition) velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
 
 		//Debug.Log(Input.GetAxisRaw(getPlayerKey("Horizontal")));
 
@@ -197,18 +197,16 @@ public class KinematicPlayer : MonoBehaviour
 
 	void FixedUpdate () 
 	{
-		velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+		if (!freezePosition) velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+
 		Vector2 deltaPosition = velocity * Time.deltaTime;
 
 		grounded = false;
 
-		if (!freezePosition)
-		{
-			Vector2 move = Vector2.up * deltaPosition;
-			Move(move, true);  // vertical movement
-			move = Vector2.right * deltaPosition;
-			Move(move, false); // horizontal movement
-		}
+		Vector2 move = Vector2.up * deltaPosition;
+		Move(move, true);  // vertical movement
+		move = Vector2.right * deltaPosition;
+		Move(move, false); // horizontal movement
 
 		onWall = Physics2D.OverlapCircle(wallChecker.position, 0.25f, groundLayer);
 
@@ -519,6 +517,7 @@ public class KinematicPlayer : MonoBehaviour
 		freezePosition = true;
 		while (i < rockJumpFrames)
 		{
+			velocity = Vector2.zero;
 			grabbedRock.transform.position = Vector3.Lerp(rockStart, rockEnd, (float)i * 2/ rockJumpFrames);
 			direction = getRockJumpDirection();
 			i++;
@@ -530,7 +529,7 @@ public class KinematicPlayer : MonoBehaviour
 
 		// cast collider to the end point
 		RaycastHit2D[] hitArray = new RaycastHit2D[16];
-		int hitCount = rb2d.Cast(direction, rockContactFilter, hitArray);
+		int hitCount = rb2d.Cast(direction, rockContactFilter, hitArray, rockJumpDistance);
 
 		float distance = rockJumpDistance;
 		for (int j = 0; j < hitCount; j++)

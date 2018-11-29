@@ -6121,31 +6121,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114896557756497232, guid: 34fb14b628c254573a442b21797a0072,
-        type: 2}
-      propertyPath: playerNumber
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114896557756497232, guid: 34fb14b628c254573a442b21797a0072,
-        type: 2}
-      propertyPath: jumpForce
-      value: 16.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 50806330591117342, guid: 34fb14b628c254573a442b21797a0072,
-        type: 2}
-      propertyPath: m_Mass
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 50806330591117342, guid: 34fb14b628c254573a442b21797a0072,
-        type: 2}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 6200000, guid: e39572e27a8d58d41a7f46b5adada98b, type: 2}
-    - target: {fileID: 61992207003743628, guid: 34fb14b628c254573a442b21797a0072,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34fb14b628c254573a442b21797a0072, type: 2}
   m_IsPrefabAsset: 0

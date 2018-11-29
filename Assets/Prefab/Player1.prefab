@@ -214,13 +214,11 @@ MonoBehaviour:
   jumpForce: 36
   gravityModifier: 10
   shellRadius: 0.01
-  jumpTimer: 0.3
+  jumpTimer: 0.2
   coyoteTimer: 0.3
-  rockJumpFrames: 10
-  rockJumpSpeed: 40
-  groundLayer:
-    serializedVersion: 2
-    m_Bits: 256
+  preRockJumpFrames: 10
+  rockJumpFrames: 5
+  rockJumpSpeed: 100
   wallChecker: {fileID: 4170250721874796}
   rayOrigin: {fileID: 4170680461037868}
   grabbedRocksPosition: {fileID: 4405870894078722}

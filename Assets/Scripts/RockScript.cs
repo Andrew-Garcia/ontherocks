@@ -175,7 +175,6 @@ public class RockScript : MonoBehaviour {
 	}
 
 	private void reduceColliderSize() {
-		//c2d.offset += Vector2.one * c2d.size / 10;
 		c2d.size = c2d.size * 0.9f;
 	}
 
@@ -185,7 +184,7 @@ public class RockScript : MonoBehaviour {
 		// reduce collider size, so that adjacent tiles aren't accidently hit
 		reduceColliderSize();
 
-		// check if we're inside a block. if we are, destory
+		// check if we're inside a block. if we are, destroy ourselves
 		RaycastHit2D[] results = new RaycastHit2D[8];
 		if (c2d.Cast(Vector2.one, rockFilter, results, 0) > 0) HitDestroy();
 

@@ -8,6 +8,7 @@ public class KinematicPlayer : MonoBehaviour
 	{
 		MOVE,
 		ROCKJUMP,
+		BLOCK,
 	}
 
 	bool grounded;
@@ -29,7 +30,6 @@ public class KinematicPlayer : MonoBehaviour
 
 	RaycastHit2D[] hitBuffer = new RaycastHit2D[16];
 	List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
-	ContactFilter2D contactFilter;
 
 	Animator anim;
 	SpriteRenderer sr;
@@ -64,6 +64,11 @@ public class KinematicPlayer : MonoBehaviour
 	public int preRockJumpFrames = 10;
 	public int rockJumpFrames = 10;
 	public float rockJumpSpeed = 5f;
+
+	[Header("Block")]
+	public int blockFrames = 15;
+	bool blocking;
+	int blockNumber = 0;
 
 	[Header("References")]
 	public Transform wallChecker;
@@ -124,15 +129,13 @@ public class KinematicPlayer : MonoBehaviour
 
 		groundLayer = LayerMask.GetMask("Ground");
 
-		contactFilter.useTriggers = false;
-		contactFilter.useLayerMask = true;
-		contactFilter.layerMask = ~LayerMask.GetMask("PlayerLayer");
-
 		rockContactFilter.useTriggers = false;
 		rockContactFilter.useLayerMask = true;
 		rockContactFilter.layerMask = ~(LayerMask.GetMask("PlayerLayer", "NoColLayer"));
 
 		lastFacingLeft = facingLeft_;
+
+		blockNumber = 0;
     }
 
 	string getPlayerKey(string keyName)
@@ -142,8 +145,6 @@ public class KinematicPlayer : MonoBehaviour
 
 	private void Update()
 	{
-		//if (Input.GetButtonDown(getPlayerKey("Punch")) && Input.GetButtonDown(getPlayerKey("RockMod"))) Debug.Log("same frame");
-
 		bool nowFacingLeft = facingLeft_;
 
 		switch (currentState) 
@@ -206,10 +207,19 @@ public class KinematicPlayer : MonoBehaviour
 					velocity = Vector2.zero;
 				}
 
+				if (Input.GetButtonDown(getPlayerKey("Block")))
+				{
+					StartCoroutine(Block());
+				}
+
 				break;
 
 			case PlayerState.ROCKJUMP:
 				
+				break;
+
+			case PlayerState.BLOCK:
+				if (grounded) velocity.x = 0;
 				break;
 		}
 
@@ -221,6 +231,7 @@ public class KinematicPlayer : MonoBehaviour
 		switch (currentState)
 		{
 			case PlayerState.MOVE:
+			case PlayerState.BLOCK:
 				velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
 				break;
 		}
@@ -263,7 +274,7 @@ public class KinematicPlayer : MonoBehaviour
 
 		if (distance > 0.001f)
 		{
-			int count = rb2d.Cast(move, contactFilter, hitBuffer, distance + shellRadius);
+			int count = rb2d.Cast(move, rockContactFilter, hitBuffer, distance + shellRadius);
 
 			hitBufferList.Clear();
 			for (int i = 0; i < count; i++)
@@ -494,6 +505,7 @@ public class KinematicPlayer : MonoBehaviour
 
 		rockScript.getPushed(getAimingDirection(), this);
 
+		// animation
         bool aimingUp = false;
         bool aimingDown = false;
         bool aimingSide = false;
@@ -544,6 +556,22 @@ public class KinematicPlayer : MonoBehaviour
         return true;
 	}
 
+	IEnumerator Block()
+	{
+		anim.SetBool("Block", true);
+		blocking = true;
+		currentState = PlayerState.BLOCK;
+
+		for (int i = 0; i < blockFrames; i++)
+		{
+			yield return null;
+		}
+
+		currentState = PlayerState.MOVE;
+		blocking = false;
+		anim.SetBool("Block", false);
+	}
+
 	IEnumerator RockJump()
 	{
 		currentState = PlayerState.ROCKJUMP;
@@ -584,22 +612,6 @@ public class KinematicPlayer : MonoBehaviour
 		// reset velocity after jump
 		velocity = Vector2.zero;
 		currentState = PlayerState.MOVE;
-
-		// change this to some velocity addition I guess. 
-		// cast collider to the end point
-		/*
-		RaycastHit2D[] hitArray = new RaycastHit2D[16];
-		int hitCount = rb2d.Cast(direction, rockContactFilter, hitArray, rockJumpDistance);
-
-		float distance = rockJumpDistance;
-		for (int j = 0; j < hitCount; j++)
-		{
-			float modifiedDistance = hitArray[j].distance + shellRadius;
-			distance = modifiedDistance < distance ? modifiedDistance : distance;
-		}
-		
-		rb2d.position = rb2d.position + (Vector2)(distance * direction);
-		*/
 	}
 
 	Vector3 getRockJumpDirection()
@@ -615,6 +627,12 @@ public class KinematicPlayer : MonoBehaviour
 
 	public void GetHit(Vector2 direction)
 	{
+		if (blocking) 
+		{
+			velocity = direction * 0.3f;
+			blockNumber++;
+			return;
+		}
 		StartCoroutine(Stun(-direction));
 	}
 

@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 50161275718127752}
   - component: {fileID: 61467836727113746}
   - component: {fileID: 114528130160222550}
-  m_Layer: 8
+  m_Layer: 13
   m_Name: Rock
   m_TagString: Rock
   m_Icon: {fileID: 0}
@@ -183,8 +183,6 @@ MonoBehaviour:
   randomSprite: 1
   pushSpeed: 50
   grabbedSpeed: 5
-  projectileLayer: 10
-  noColLayer: 11
   destroyParticles: {fileID: 1031644160562676, guid: d1702681adb41a04790162652f1257bc,
     type: 2}
   selectorRenderers:
@@ -213,7 +211,7 @@ MonoBehaviour:
     minNormalAngle: 0
     maxNormalAngle: 0
   c2d: {fileID: 0}
-  otherObject: {fileID: 0}
+  attachedObject: {fileID: 0}
 --- !u!212 &212084217293316832
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -24,8 +24,8 @@ public class RockScript : MonoBehaviour {
 
 	public float pushSpeed;
 	public float grabbedSpeed;
-	public int projectileLayer;
-	public int noColLayer;
+	int projectileLayer = 0;
+	int noColLayer = 0;
 	public GameObject destroyParticles;
 	public SpriteRenderer[] selectorRenderers;
 	public float smallForceRadius;
@@ -51,12 +51,14 @@ public class RockScript : MonoBehaviour {
 	Collider2D[] aimAssistTarget = new Collider2D[16];
 	public ContactFilter2D contactFilter;
 
+	ContactFilter2D rockFilter;
+
 	// public so we can do physics2d.ignore collision in the player punch function and get the offset of the block
 	[HideInInspector]
 	public BoxCollider2D c2d;
 
 	[HideInInspector]
-	public DestroyObject otherObject;
+	public DestroyObject attachedObject;
 
 	public int highlighted {
 		get {
@@ -78,9 +80,15 @@ public class RockScript : MonoBehaviour {
 		c2d = GetComponent<BoxCollider2D>();
 		rb2d = GetComponent<Rigidbody2D>();
 
+		projectileLayer = LayerMask.NameToLayer("Ground");
+		noColLayer = LayerMask.NameToLayer("NoColLayer");
+
+		rockFilter.useLayerMask = true;
+		rockFilter.layerMask = ~LayerMask.GetMask("PlayerLayer", "NoColLayer");
+
 		if (randomSprite) sr.sprite = spritePool[Random.Range(0, spritePool.Length)];
 
-		otherObject = GetComponent<DestroyObject>();
+		attachedObject = GetComponent<DestroyObject>();
 	}
 	
 	// Update is called once per frame
@@ -106,7 +114,7 @@ public class RockScript : MonoBehaviour {
 			Vector3 centerPosition = c2d.offset;
 			centerPosition += transform.position;
 
-			// ! needs to work even if owner has died !
+			// ! needs to work without owner !
 			int smallForceCount = Physics2D.OverlapCircle(centerPosition, smallForceRadius, contactFilter, aimAssistTarget);
 
 			for (int i = 0; i < smallForceCount; i++)
@@ -171,14 +179,26 @@ public class RockScript : MonoBehaviour {
 		c2d.size = c2d.size * 0.9f;
 	}
 
-	public void getPushed(Vector2 direction) {
-		this.currentState = state.PUSHED;
+	public void getPushed(Vector2 direction, KinematicPlayer script) {
+		currentState = state.PUSHED;
+
+		// reduce collider size, so that adjacent tiles aren't accidently hit
 		reduceColliderSize();
+
+		// check if we're inside a block. if we are, destory
+		RaycastHit2D[] results = new RaycastHit2D[8];
+		if (c2d.Cast(Vector2.one, rockFilter, results, 0) > 0) HitDestroy();
+
 		gameObject.layer = projectileLayer;
 		rb2d.bodyType = RigidbodyType2D.Dynamic;
 		rb2d.velocity = pushSpeed * direction;
+
+		if (!owner) owner = script;
+
 		c2d.isTrigger = false;
 		timePushed = Time.time;
+
+		if (attachedObject) attachedObject.DestoryObject();
 	}
 
 	public bool getGrabbed(KinematicPlayer script) {
@@ -188,11 +208,11 @@ public class RockScript : MonoBehaviour {
 		currentState = state.HELD;
 		rb2d.bodyType = RigidbodyType2D.Dynamic;
 
-		owner = script;
+		if (!owner) owner = script;
+
 		c2d.isTrigger = true;
 
-		if (otherObject) otherObject.DestoryObject();
-
+		if (attachedObject) attachedObject.DestoryObject();
 		return true;
 	}
 
@@ -200,10 +220,16 @@ public class RockScript : MonoBehaviour {
 		return new Vector2(transform.position.x + c2d.offset.x, transform.position.y + 0.1f);
 	}
 
+	public void HitDestroy()
+	{
+		Instantiate(destroyParticles, transform.position, destroyParticles.transform.rotation);
+		AudioSource.PlayClipAtPoint(destroySound, transform.position, 10f);
+		Destroy(gameObject);
+	}
+
 	public void JumpDestroy(Vector2 direction)
 	{
-		Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction);
-		//Debug.DrawRay(transform.position, rotation * Vector3.down, Color.red, 10f);
+		Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction);;
 		Instantiate(jumpDestroyParticles, transform.position, rotation);
 		Destroy(gameObject);
 	}
@@ -214,28 +240,22 @@ public class RockScript : MonoBehaviour {
 	}
 
 	void OnCollisionEnter2D(Collision2D other)
-	{ 
+	{
 		if (currentState != state.PUSHED) {
 			return;
 		}
 		
-		//Debug.Log("Hit something: " + other.gameObject);
 		if (other.gameObject.CompareTag("Player")) {
 			FindObjectOfType<GameController>().freezeFrame();
 			other.gameObject.GetComponent<KinematicPlayer>().GetHit(other.relativeVelocity);
 		}
 
-		if (other.gameObject.CompareTag("Rock") && destroyOther) {
-			Instantiate(destroyParticles, transform.position, destroyParticles.transform.rotation);
-
-			if (other.gameObject.GetComponent<RockScript>().otherObject) other.gameObject.GetComponent<RockScript>().otherObject.DestoryObject();
+		if (other.gameObject.CompareTag("Rock") && destroyOther) { 
+			if (other.gameObject.GetComponent<RockScript>().attachedObject) other.gameObject.GetComponent<RockScript>().attachedObject.DestoryObject();
 			Destroy(other.gameObject);
 		}
 
 		// Get destroyed
-		//Camera.main.GetComponent<CameraShake>().shake(isBig);
-		Instantiate(destroyParticles, transform.position, destroyParticles.transform.rotation);
-		Destroy(gameObject);
-		AudioSource.PlayClipAtPoint(destroySound, transform.position, 10f);
+		HitDestroy();
 	}
 }

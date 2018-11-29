@@ -249,7 +249,7 @@ public class PlayerScript : MonoBehaviour {
             setSelectedRock(null);
         }
         if (!rockScript) return false;
-        rockScript.getPushed(getAimingDirection());
+        //rockScript.getPushed(getAimingDirection());
 		if (grounded) anim.SetTrigger("Punch");
 		else anim.SetTrigger("Punch_air");
         return true;

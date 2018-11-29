@@ -66,8 +66,9 @@ public class KinematicPlayer : MonoBehaviour
 	public float rockJumpSpeed = 5f;
 
 	[Header("References")]
-	public LayerMask groundLayer;
 	public Transform wallChecker;
+
+	LayerMask groundLayer;
 
 	public Transform rayOrigin;
 	public Transform grabbedRocksPosition;
@@ -120,6 +121,8 @@ public class KinematicPlayer : MonoBehaviour
 		wallCheckX = wallChecker.localPosition.x;
 
 		getAimingDirection();
+
+		groundLayer = LayerMask.GetMask("Ground");
 
 		contactFilter.useTriggers = false;
 		contactFilter.useLayerMask = true;
@@ -299,11 +302,6 @@ public class KinematicPlayer : MonoBehaviour
 
 							Debug.DrawRay(transform.position, direction, Color.black, 10f);
 
-							ContactFilter2D cf = new ContactFilter2D();
-
-							cf.useLayerMask = true;
-							cf.layerMask = ~LayerMask.GetMask("PlayerLayer");
-
 							// if we run into a block on the side and there is an empty space above it...
 							int stepUpColliders = Physics2D.BoxCast((Vector2)transform.position + direction + col.offset, 
 								col.size, 0, Vector2.one, rockContactFilter, results, 0);
@@ -333,18 +331,6 @@ public class KinematicPlayer : MonoBehaviour
 		rb2d.position = rb2d.position + move.normalized * distance;
 	}
 
-	bool Grab()
-	{
-		RockScript rockScript = selectedRock;
-		if (rockScript && rockScript.getGrabbed(this))
-		{
-			grabbedRock = rockScript;
-			return true;
-		}
-
-		return false;
-	}
-
 	Vector2 getAimingDirection()
 	{
 		Vector2 newDirection = new Vector2(Input.GetAxisRaw(getPlayerKey("Horizontal")),
@@ -371,6 +357,8 @@ public class KinematicPlayer : MonoBehaviour
 		}
 
 		RockScript script = null;
+
+		// surely we can consolidate these 4 raycasts into a function...
 		RaycastHit2D frontRayHit = Physics2D.Raycast(rayOrigin.position, aimingDirection, 2f, groundLayer);
 		if (frontRayHit)
 		{
@@ -457,18 +445,35 @@ public class KinematicPlayer : MonoBehaviour
 		else selectedRock = null;
 	}
 
+	bool Grab()
+	{
+		RockScript rockScript = selectedRock;
+		if (rockScript && rockScript.getGrabbed(this))
+		{
+			grabbedRock = rockScript;
+			return true;
+		}
+
+		return false;
+	}
+
 	bool Punch()
 	{
 		RockScript rockScript;
+		
+		// if we're holding a rock, use that rock and empty our grabbed rock spot
 		if (grabbedRock)
 		{
 			rockScript = grabbedRock;
 			grabbedRock = null;
 		}
+		// otherwise...
 		else
 		{
+			// use the rock that's selected and punch it
 			rockScript = selectedRock;
 
+			// if there's a rock in front of the selected rock, don't destroy it when punched (to simulate digging)
 			if (rockScript)
 			{
 				Vector2 rockPos = new Vector2(rockScript.transform.position.x, rockScript.transform.position.y);
@@ -481,11 +486,13 @@ public class KinematicPlayer : MonoBehaviour
 
 			setSelectedRock(null);
 		}
+
+		// if we're not holding a rock or selecting one, return
 		if (!rockScript) return false;
 
 		Physics2D.IgnoreCollision(GetComponent<Collider2D>(), rockScript.c2d);
 
-		rockScript.getPushed(getAimingDirection());
+		rockScript.getPushed(getAimingDirection(), this);
 
         bool aimingUp = false;
         bool aimingDown = false;
@@ -642,31 +649,4 @@ public class KinematicPlayer : MonoBehaviour
 			}
 		}
 	}
-
-	/*
-	void OnCollisionEnter2D(Collision2D other)
-	{
-		Debug.Log(other.gameObject + " " + gameObject.name);
-		if (other.gameObject.CompareTag("DeathCollider"))
-		{
-			FindObjectOfType<GameController>().onPlayerDie(playerNumber);
-			if (gameObject)
-			{
-				Camera.main.GetComponent<Camera2D>().RemoveFocus(this.GetComponent<GameEye2D.Focus.F_Transform>());
-				AudioSource.PlayClipAtPoint(deathClip, transform.position, 10f);
-				Destroy(gameObject);
-			}
-			return;
-		}
-		RockScript rockScript = other.gameObject.GetComponent<RockScript>();
-		if (!rockScript || rockScript.currentState != RockScript.state.PUSHED)
-			return;
-		Debug.Log(other.rigidbody.velocity);
-		if (!stunned)
-		{
-			stunned = true;
-			StartCoroutine("Stun");
-		}
-	}
-	*/
 }

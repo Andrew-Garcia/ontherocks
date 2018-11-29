@@ -19,7 +19,7 @@ InputManager:
     snap: 1
     invert: 0
     type: 2
-    axis: 10
+    axis: 8
     joyNum: 1
   - serializedVersion: 3
     m_Name: Player1Vertical
@@ -33,9 +33,9 @@ InputManager:
     dead: 0.001
     sensitivity: 1000
     snap: 1
-    invert: 1
+    invert: 0
     type: 2
-    axis: 11
+    axis: 9
     joyNum: 1
   - serializedVersion: 3
     m_Name: Player1Jump
@@ -92,7 +92,7 @@ InputManager:
     negativeButton: 
     positiveButton: left shift
     altNegativeButton: 
-    altPositiveButton: joystick 1 button 4
+    altPositiveButton: joystick 1 button 5
     gravity: 1000
     dead: 0.001
     sensitivity: 1000

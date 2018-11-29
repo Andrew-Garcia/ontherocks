@@ -18,12 +18,12 @@ TagManager:
   - UI
   - 
   - 
-  - Ground
+  - Pixelation
   - PlayerLayer
   - ProjectileLayer
   - NoColLayer
   - Lava
-  - Pixelation
+  - Ground
   - 
   - 
   - 

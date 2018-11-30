@@ -163,19 +163,16 @@ public class KinematicPlayer : MonoBehaviour
 					&& Input.GetButtonDown(getPlayerKey("Jump")))
 				{
 
-					// if you press jump while the coyote timer is active, you haven't double jumped
+					// if you press jump while the coyote timer is active, you haven't double jumped, otherwise, set the value normally
 					if (coyoteTime + 0.1f > Time.time)
 						doubleJumped = false;
-					// otherwise, do it normally
 					else
 						doubleJumped = !grounded;
 					
-					// if we jump within the backflip timer, backflip
+					// if we jump in air within the backflip timer, backflip
 					if (doubleJumped && backFlipTime + backFlipTimer > Time.time)
-					{
-						Debug.Log("now: " + nowFacingLeft + " | last: " + lastFacingLeft);
 						anim.SetBool("IsBackflipping", true);
-					}
+					
 
 					velocity.y = jumpForce;
 					lastJumpTime = Time.time;

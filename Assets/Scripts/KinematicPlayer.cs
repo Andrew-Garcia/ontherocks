@@ -166,10 +166,11 @@ public class KinematicPlayer : MonoBehaviour
 						doubleJumped = !grounded;
 						if (nowFacingLeft != lastFacingLeft)
 						{
+							Debug.Log("now: " + nowFacingLeft + " | last: " + lastFacingLeft);
 							anim.SetBool("IsBackflipping", true);
 						}
 					}
-					lastFacingLeft = nowFacingLeft;
+
 					velocity.y = jumpForce;
 					lastJumpTime = Time.time;
 				}
@@ -181,7 +182,9 @@ public class KinematicPlayer : MonoBehaviour
 				{
 					anim.SetBool("IsBackflipping", false);
 				}
-	
+
+				lastFacingLeft = nowFacingLeft;
+
 				// punch input
 				if (Input.GetButtonDown(getPlayerKey("Punch")))
 				{
@@ -320,11 +323,7 @@ public class KinematicPlayer : MonoBehaviour
 								col.size, 0, Vector2.one, rockContactFilter, results, 0);
 
 							// step up
-							if (stepUpColliders == 0)
-							{
-								Debug.Log("step up");
-								rb2d.position = rb2d.position + direction;
-							}
+							if (stepUpColliders == 0) rb2d.position = rb2d.position + direction;
 						}
 					}
 				}

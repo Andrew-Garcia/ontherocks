@@ -63,6 +63,7 @@ MonoBehaviour:
   - Scenes/Cave - 2
   - Scenes/Cave - 3
   - Scenes/Sky - 1
+  - Scenes/Sky - 2
   respawnClip: {fileID: 8300000, guid: 0ebd29e518d5f4464a9bdcc4ccb21a72, type: 3}
   freezeTimeScale: 0.2
   freezeTimeDuration: 0.4

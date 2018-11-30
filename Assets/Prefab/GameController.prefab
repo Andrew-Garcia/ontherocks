@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundLayerMask:
     serializedVersion: 2
-    m_Bits: 4864
+    m_Bits: 12800
   playerLives: 0300000003000000
   playerPrefab:
   - {fileID: 1905370455827948, guid: 34fb14b628c254573a442b21797a0072, type: 2}

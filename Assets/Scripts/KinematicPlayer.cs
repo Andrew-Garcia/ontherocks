@@ -21,6 +21,7 @@ public class KinematicPlayer : MonoBehaviour
 	private float lastJumpTime = 0;
 	private float coyoteTime = 0;
 	private float selectedRockTime = 0;
+	private float backFlipTime = 0;
 
 	bool onWall;
 
@@ -62,6 +63,7 @@ public class KinematicPlayer : MonoBehaviour
 	public float shellRadius = 0.01f;
 	public float jumpTimer = 0.15f;
 	public float coyoteTimer = 0.1f;
+	float backFlipTimer = 0.1f;
 
 	[Header("Rock Jump")]
 	public int preRockJumpFrames = 10;
@@ -160,15 +162,19 @@ public class KinematicPlayer : MonoBehaviour
 					|| coyoteTime + coyoteTimer > Time.time)
 					&& Input.GetButtonDown(getPlayerKey("Jump")))
 				{
-					if (coyoteTime + 0.1f > Time.time) doubleJumped = false;
+
+					// if you press jump while the coyote timer is active, you haven't double jumped
+					if (coyoteTime + 0.1f > Time.time)
+						doubleJumped = false;
+					// otherwise, do it normally
 					else
-					{
 						doubleJumped = !grounded;
-						if (nowFacingLeft != lastFacingLeft)
-						{
-							Debug.Log("now: " + nowFacingLeft + " | last: " + lastFacingLeft);
-							anim.SetBool("IsBackflipping", true);
-						}
+					
+					// if we jump within the backflip timer, backflip
+					if (doubleJumped && backFlipTime + backFlipTimer > Time.time)
+					{
+						Debug.Log("now: " + nowFacingLeft + " | last: " + lastFacingLeft);
+						anim.SetBool("IsBackflipping", true);
 					}
 
 					velocity.y = jumpForce;
@@ -182,6 +188,10 @@ public class KinematicPlayer : MonoBehaviour
 				{
 					anim.SetBool("IsBackflipping", false);
 				}
+
+				// if we switch directions in air start the backflip timer 
+				if (lastFacingLeft != nowFacingLeft && !grounded)
+					backFlipTime = Time.time;
 
 				lastFacingLeft = nowFacingLeft;
 
@@ -202,14 +212,15 @@ public class KinematicPlayer : MonoBehaviour
 				if (Input.GetButtonDown(getPlayerKey("Jump")) && Input.GetButton(getPlayerKey("RockMod")))
 				{
 					if (grabbedRock) StartCoroutine(RockJump());
-					else Debug.Log("no rock");
 				}
 
+				// aiming input
 				if (Input.GetButton(getPlayerKey("RockMod")) && grounded)
 				{
 					velocity = Vector2.zero;
 				}
 
+				// block input
 				if (Input.GetButtonDown(getPlayerKey("Block")))
 				{
 					StartCoroutine(Block());
@@ -257,9 +268,13 @@ public class KinematicPlayer : MonoBehaviour
 			anim.SetBool("Jump", lastGrounded);
 			doubleJumped = false;
 
+			// if we've gone from on ground to not on ground, start the coyote timer
 			if (lastGrounded && !grounded) coyoteTime = Time.time;
+
+			// if we've gone from not on ground to on ground, do the landing animation
 			if (!lastGrounded && grounded) anim.SetTrigger("Landing");
 		}
+
 		lastGrounded = grounded;
 
 		getAimingDirection();
@@ -311,19 +326,20 @@ public class KinematicPlayer : MonoBehaviour
 					{
 						if (grounded)
 						{
-							// position to step up to
-							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.45f, 1f);
+							// position to check block in
+							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.9f, 1f);
+
+							// position to step up into
+							Vector2 newPos = new Vector2(-hitBuffer[i].normal.x * 0.1f, 1f);
 
 							RaycastHit2D[] results = new RaycastHit2D[16];
-
-							Debug.DrawRay(transform.position, direction, Color.black, 10f);
 
 							// if we run into a block on the side and there is an empty space above it...
 							int stepUpColliders = Physics2D.BoxCast((Vector2)transform.position + direction + col.offset, 
 								col.size, 0, Vector2.one, rockContactFilter, results, 0);
 
 							// step up
-							if (stepUpColliders == 0) rb2d.position = rb2d.position + direction;
+							if (stepUpColliders == 0) rb2d.position = rb2d.position + newPos;
 						}
 					}
 				}

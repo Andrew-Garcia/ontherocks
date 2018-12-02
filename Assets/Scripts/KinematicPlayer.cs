@@ -9,6 +9,9 @@ public class KinematicPlayer : MonoBehaviour
 		MOVE,
 		ROCKJUMP,
 		BLOCK,
+		STANDARDSTUN,
+		BLOCKSTUN,
+		SUPERPUNCHSTUN,
 	}
 
 	bool grounded;
@@ -18,6 +21,7 @@ public class KinematicPlayer : MonoBehaviour
 	private float lastJumpTime = 0;
 	private float coyoteTime = 0;
 	private float selectedRockTime = 0;
+	private float backFlipTime = 0;
 
 	bool onWall;
 
@@ -59,6 +63,7 @@ public class KinematicPlayer : MonoBehaviour
 	public float shellRadius = 0.01f;
 	public float jumpTimer = 0.15f;
 	public float coyoteTimer = 0.1f;
+	float backFlipTimer = 0.1f;
 
 	[Header("Rock Jump")]
 	public int preRockJumpFrames = 10;
@@ -67,7 +72,6 @@ public class KinematicPlayer : MonoBehaviour
 
 	[Header("Block")]
 	public int blockFrames = 15;
-	bool blocking;
 	int blockNumber = 0;
 
 	[Header("References")]
@@ -151,25 +155,25 @@ public class KinematicPlayer : MonoBehaviour
 		{
 			case PlayerState.MOVE:
 				// set horizontal velocity
-				if (!stunned) velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
-
-				//Debug.Log(Input.GetAxisRaw(getPlayerKey("Horizontal")));
+				velocity.x = Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed;
 
 				// jump and double jump input
 				if ((((grounded || !doubleJumped) && lastJumpTime + jumpTimer < Time.time)	
 					|| coyoteTime + coyoteTimer > Time.time)
 					&& Input.GetButtonDown(getPlayerKey("Jump")))
 				{
-					if (coyoteTime + 0.1f > Time.time) doubleJumped = false;
+
+					// if you press jump while the coyote timer is active, you haven't double jumped, otherwise, set the value normally
+					if (coyoteTime + 0.1f > Time.time)
+						doubleJumped = false;
 					else
-					{
 						doubleJumped = !grounded;
-						if (nowFacingLeft != lastFacingLeft)
-						{
-							anim.SetBool("IsBackflipping", true);
-						}
-					}
-					lastFacingLeft = nowFacingLeft;
+					
+					// if we jump in air within the backflip timer, backflip
+					if (doubleJumped && backFlipTime + backFlipTimer > Time.time)
+						anim.SetBool("IsBackflipping", true);
+					
+
 					velocity.y = jumpForce;
 					lastJumpTime = Time.time;
 				}
@@ -181,7 +185,13 @@ public class KinematicPlayer : MonoBehaviour
 				{
 					anim.SetBool("IsBackflipping", false);
 				}
-	
+
+				// if we switch directions in air start the backflip timer 
+				if (lastFacingLeft != nowFacingLeft && !grounded)
+					backFlipTime = Time.time;
+
+				lastFacingLeft = nowFacingLeft;
+
 				// punch input
 				if (Input.GetButtonDown(getPlayerKey("Punch")))
 				{
@@ -199,14 +209,15 @@ public class KinematicPlayer : MonoBehaviour
 				if (Input.GetButtonDown(getPlayerKey("Jump")) && Input.GetButton(getPlayerKey("RockMod")))
 				{
 					if (grabbedRock) StartCoroutine(RockJump());
-					else Debug.Log("no rock");
 				}
 
+				// aiming input
 				if (Input.GetButton(getPlayerKey("RockMod")) && grounded)
 				{
 					velocity = Vector2.zero;
 				}
 
+				// block input
 				if (Input.GetButtonDown(getPlayerKey("Block")))
 				{
 					StartCoroutine(Block());
@@ -215,6 +226,7 @@ public class KinematicPlayer : MonoBehaviour
 				break;
 
 			case PlayerState.ROCKJUMP:
+			case PlayerState.STANDARDSTUN:
 				
 				break;
 
@@ -228,13 +240,7 @@ public class KinematicPlayer : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		switch (currentState)
-		{
-			case PlayerState.MOVE:
-			case PlayerState.BLOCK:
-				velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
-				break;
-		}
+		if (currentState != PlayerState.ROCKJUMP) velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
 
 		Vector2 deltaPosition = velocity * Time.deltaTime;
 
@@ -259,9 +265,13 @@ public class KinematicPlayer : MonoBehaviour
 			anim.SetBool("Jump", lastGrounded);
 			doubleJumped = false;
 
+			// if we've gone from on ground to not on ground, start the coyote timer
 			if (lastGrounded && !grounded) coyoteTime = Time.time;
+
+			// if we've gone from not on ground to on ground, do the landing animation
 			if (!lastGrounded && grounded) anim.SetTrigger("Landing");
 		}
+
 		lastGrounded = grounded;
 
 		getAimingDirection();
@@ -282,16 +292,23 @@ public class KinematicPlayer : MonoBehaviour
 				hitBufferList.Add(hitBuffer[i]);
 			}
 
-			// bounce when stunned
-			if (stunned && hitBufferList.Count > 0) 
+			// in standard stun: when you hit a rock, bounce off
+			if (currentState == PlayerState.STANDARDSTUN && hitBufferList.Count > 0) 
 			{
 				if (yMove) velocity.y = Vector2.Reflect(velocity, hitBuffer[0].normal).y;
 				else velocity.x = Vector2.Reflect(velocity, hitBufferList[0].normal).x;
 			}
 
+			// in superpunch stun: when you hit a rock, slow down
+			if (currentState == PlayerState.SUPERPUNCHSTUN && hitBufferList.Count > 0)
+			{
+				//velocity /= 2;
+				//Debug.Log("oof");
+			}
+
 			for (int i = 0; i < hitBufferList.Count; i++)
 			{
-				if (!stunned)
+				if (currentState != PlayerState.STANDARDSTUN || currentState != PlayerState.SUPERPUNCHSTUN)
 				{
 					if (yMove)
 					{
@@ -306,30 +323,20 @@ public class KinematicPlayer : MonoBehaviour
 					{
 						if (grounded)
 						{
-							// position to step up to
-							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.45f, 1f);
+							// position to check block in
+							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.9f, 1f);
+
+							// position to step up into
+							Vector2 newPos = new Vector2(-hitBuffer[i].normal.x * 0.1f, 1f);
 
 							RaycastHit2D[] results = new RaycastHit2D[16];
-
-							Debug.DrawRay(transform.position, direction, Color.black, 10f);
 
 							// if we run into a block on the side and there is an empty space above it...
 							int stepUpColliders = Physics2D.BoxCast((Vector2)transform.position + direction + col.offset, 
 								col.size, 0, Vector2.one, rockContactFilter, results, 0);
-							
-							// draw step up box
-							/*
-							Vector2 topRight = new Vector2(col.size.x / 2, col.size.y / 2) + col.offset;
-							Vector2 botLeft = new Vector2(-col.size.x / 2, -col.size.y / 2) + col.offset;
-
-							Debug.DrawRay((Vector2)transform.position + topRight + direction, Vector2.left * col.size.x, Color.red, 10f);
-							Debug.DrawRay((Vector2)transform.position + topRight + direction, Vector2.down * col.size.y, Color.red, 10f);
-							Debug.DrawRay((Vector2)transform.position + botLeft + direction, Vector2.right * col.size.x, Color.red, 10f);
-							Debug.DrawRay((Vector2)transform.position + botLeft + direction, Vector2.up * col.size.y, Color.red, 10f);
-							*/
 
 							// step up
-							if (stepUpColliders == 0) rb2d.position = rb2d.position + direction;
+							if (stepUpColliders == 0) rb2d.position = rb2d.position + newPos;
 						}
 					}
 				}
@@ -559,7 +566,6 @@ public class KinematicPlayer : MonoBehaviour
 	IEnumerator Block()
 	{
 		anim.SetBool("Block", true);
-		blocking = true;
 		currentState = PlayerState.BLOCK;
 
 		for (int i = 0; i < blockFrames; i++)
@@ -568,7 +574,6 @@ public class KinematicPlayer : MonoBehaviour
 		}
 
 		currentState = PlayerState.MOVE;
-		blocking = false;
 		anim.SetBool("Block", false);
 	}
 
@@ -580,7 +585,7 @@ public class KinematicPlayer : MonoBehaviour
 
 		int i = 0;
 
-		// not fixed, but moving to a specific spot
+		// set rock to state with no outside velocity
 		grabbedRock.currentState = RockScript.state.SCRIPTMOVE;
 
 		Vector3 rockEnd = transform.position - (grabbedRock.isBig ? new Vector3(1f, 1.375f) 
@@ -627,7 +632,7 @@ public class KinematicPlayer : MonoBehaviour
 
 	public void GetHit(Vector2 direction)
 	{
-		if (blocking) 
+		if (currentState == PlayerState.BLOCK) 
 		{
 			velocity = direction * 0.3f;
 			blockNumber++;
@@ -638,13 +643,13 @@ public class KinematicPlayer : MonoBehaviour
 
 	IEnumerator Stun(Vector2 direction)
 	{
-		stunned = true;
+		currentState = PlayerState.STANDARDSTUN;
         anim.SetBool("IsStunned", true);
 		velocity = direction * 0.3f;
 
 		yield return new WaitForSeconds(stunTime);
 
-		stunned = false;
+		currentState = PlayerState.MOVE;
         anim.SetBool("IsStunned", false);
     }
 

@@ -4523,11 +4523,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114444305480082054, guid: f9f2e6cdc60c840de9c25f866f0c9245,
-        type: 2}
-      propertyPath: groundLayerMask.m_Bits
-      value: 4864
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f9f2e6cdc60c840de9c25f866f0c9245, type: 2}
   m_IsPrefabAsset: 0

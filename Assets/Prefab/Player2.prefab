@@ -122,7 +122,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1905370455827948}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.31, y: -11.6, z: 0}
+  m_LocalPosition: {x: 1.88, y: -2.82, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4170250721874796}
@@ -205,6 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3ef0d4465bd89e48b75cfe05c956c35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  freezeOnRockJump: 0
   playerNumber: 2
   deathClip: {fileID: 8300000, guid: 0af41e8082ce64f6593d672b47d973d7, type: 3}
   stunTime: 0.5
@@ -215,10 +216,10 @@ MonoBehaviour:
   shellRadius: 0.01
   jumpTimer: 0.2
   coyoteTimer: 0.3
-  preRockJumpFrames: 14
+  preRockJumpFrames: 5
   rockJumpFrames: 5
-  rockJumpSpeed: 120
-  blockFrames: 15
+  rockJumpSpeed: 100
+  blockFrames: 10
   wallChecker: {fileID: 4170250721874796}
   rayOrigin: {fileID: 4170680461037868}
   grabbedRocksPosition: {fileID: 4405870894078722}

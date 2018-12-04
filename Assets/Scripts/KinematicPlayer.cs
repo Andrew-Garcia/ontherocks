@@ -49,6 +49,7 @@ public class KinematicPlayer : MonoBehaviour
 	bool shouldGrab = false;
 
 	[Header("Player settings")]
+	public bool freezeOnRockJump = true;
 	public int playerNumber = 1;
 	[SerializeField] AudioClip deathClip;
 
@@ -160,7 +161,8 @@ public class KinematicPlayer : MonoBehaviour
 				// jump and double jump input
 				if ((((grounded || !doubleJumped) && lastJumpTime + jumpTimer < Time.time)	
 					|| coyoteTime + coyoteTimer > Time.time)
-					&& Input.GetButtonDown(getPlayerKey("Jump")))
+					&& Input.GetButtonDown(getPlayerKey("Jump"))
+					&& !Input.GetButton(getPlayerKey("RockMod")))
 				{
 
 					// if you press jump while the coyote timer is active, you haven't double jumped, otherwise, set the value normally
@@ -172,7 +174,6 @@ public class KinematicPlayer : MonoBehaviour
 					// if we jump in air within the backflip timer, backflip
 					if (doubleJumped && backFlipTime + backFlipTimer > Time.time)
 						anim.SetBool("IsBackflipping", true);
-					
 
 					velocity.y = jumpForce;
 					lastJumpTime = Time.time;
@@ -189,7 +190,7 @@ public class KinematicPlayer : MonoBehaviour
 				// if we switch directions in air start the backflip timer 
 				if (lastFacingLeft != nowFacingLeft && !grounded)
 					backFlipTime = Time.time;
-
+				
 				lastFacingLeft = nowFacingLeft;
 
 				// punch input
@@ -228,6 +229,7 @@ public class KinematicPlayer : MonoBehaviour
 			case PlayerState.ROCKJUMP:
 			case PlayerState.STANDARDSTUN:
 				
+				
 				break;
 
 			case PlayerState.BLOCK:
@@ -240,7 +242,13 @@ public class KinematicPlayer : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (currentState != PlayerState.ROCKJUMP) velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+		if (freezeOnRockJump)
+		{
+			if (currentState != PlayerState.ROCKJUMP) velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+		}
+		else {
+			velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+		}
 
 		Vector2 deltaPosition = velocity * Time.deltaTime;
 
@@ -303,12 +311,12 @@ public class KinematicPlayer : MonoBehaviour
 			if (currentState == PlayerState.SUPERPUNCHSTUN && hitBufferList.Count > 0)
 			{
 				//velocity /= 2;
-				//Debug.Log("oof");
+				Debug.Log("oof");
 			}
 
 			for (int i = 0; i < hitBufferList.Count; i++)
 			{
-				if (currentState != PlayerState.STANDARDSTUN || currentState != PlayerState.SUPERPUNCHSTUN)
+				if (currentState != PlayerState.STANDARDSTUN && currentState != PlayerState.SUPERPUNCHSTUN)
 				{
 					if (yMove)
 					{
@@ -336,7 +344,10 @@ public class KinematicPlayer : MonoBehaviour
 								col.size, 0, Vector2.one, rockContactFilter, results, 0);
 
 							// step up
-							if (stepUpColliders == 0) rb2d.position = rb2d.position + newPos;
+							if (stepUpColliders == 0)
+							{
+								rb2d.position = rb2d.position + newPos;
+							}
 						}
 					}
 				}
@@ -594,7 +605,7 @@ public class KinematicPlayer : MonoBehaviour
 		Vector3 rockStart = grabbedRock.transform.position;
 
 		// freeze current position, get direction to jump to, bring rock to under our feet
-		velocity = Vector2.zero;
+		if (freezeOnRockJump) velocity = Vector2.zero;
 		while (i < preRockJumpFrames)
 		{
 			grabbedRock.transform.position = Vector3.Lerp(rockStart, rockEnd, (float)i * 2/ preRockJumpFrames);
@@ -643,7 +654,7 @@ public class KinematicPlayer : MonoBehaviour
 
 	IEnumerator Stun(Vector2 direction)
 	{
-		currentState = PlayerState.STANDARDSTUN;
+		currentState = PlayerState.SUPERPUNCHSTUN;
         anim.SetBool("IsStunned", true);
 		velocity = direction * 0.3f;
 

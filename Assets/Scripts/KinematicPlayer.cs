@@ -83,6 +83,7 @@ public class KinematicPlayer : MonoBehaviour
 	public Transform rayOrigin;
 	public Transform grabbedRocksPosition;
     public ParticleSystem dashDust;
+	public ParticleSystem landingDust;
 
 	GameController gc;
 
@@ -278,7 +279,11 @@ public class KinematicPlayer : MonoBehaviour
 			if (lastGrounded && !grounded) coyoteTime = Time.time;
 
 			// if we've gone from not on ground to on ground, do the landing animation
-			if (!lastGrounded && grounded) anim.SetTrigger("Landing");
+			if (!lastGrounded && grounded)
+			{
+				anim.SetTrigger("Landing");
+				landingDust.Play();
+			}
 		}
 
 		lastGrounded = grounded;
@@ -658,7 +663,7 @@ public class KinematicPlayer : MonoBehaviour
 
 	IEnumerator Stun(Vector2 direction)
 	{
-		currentState = PlayerState.SUPERPUNCHSTUN;
+		currentState = PlayerState.STANDARDSTUN;
         anim.SetBool("IsStunned", true);
 		velocity = direction * 0.3f;
 

@@ -2218,7 +2218,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1146674475734770, guid: 8ddba7a671f494b42973f02cb2d247dd, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ddba7a671f494b42973f02cb2d247dd, type: 2}
@@ -4891,8 +4891,8 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 114026758459305598, guid: 34fb14b628c254573a442b21797a0072,
         type: 2}
-      propertyPath: blockFrames
-      value: 10
+      propertyPath: freezeOnRockJump
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34fb14b628c254573a442b21797a0072, type: 2}

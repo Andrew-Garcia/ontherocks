@@ -82,6 +82,7 @@ public class KinematicPlayer : MonoBehaviour
 
 	public Transform rayOrigin;
 	public Transform grabbedRocksPosition;
+    public ParticleSystem dashDust;
 
 	GameController gc;
 
@@ -591,12 +592,15 @@ public class KinematicPlayer : MonoBehaviour
 	IEnumerator RockJump()
 	{
 		currentState = PlayerState.ROCKJUMP;
+        // resets and plays the dashdust particle
+        dashDust.time = 0;
+        dashDust.Play();
 
-		Vector3 direction = Vector3.up;
+        Vector3 direction = Vector3.up;
 
 		int i = 0;
 
-		// set rock to state with no outside velocity
+		// set rock to state with no outsidunitye velocity
 		grabbedRock.currentState = RockScript.state.SCRIPTMOVE;
 
 		Vector3 rockEnd = transform.position - (grabbedRock.isBig ? new Vector3(1f, 1.375f) 

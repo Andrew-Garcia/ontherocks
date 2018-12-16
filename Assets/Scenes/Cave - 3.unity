@@ -90,7 +90,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_UseShadowmask: 0
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -334,6 +334,11 @@ Prefab:
         type: 2}
       propertyPath: constForce
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 212651714424174078, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01ca3a0ae4ac841ec9ef96707b7cf399, type: 2}
@@ -2269,6 +2274,19 @@ Prefab:
         type: 2}
       propertyPath: constForce
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 212651714424174078, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
+        type: 2}
+      propertyPath: m_DrawMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01ca3a0ae4ac841ec9ef96707b7cf399, type: 2}

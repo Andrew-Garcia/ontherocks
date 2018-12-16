@@ -3967,9 +3967,9 @@ MonoBehaviour:
   signalAdjustI: 0
   signalAdjustQ: 0.008
   signalShiftY: 0.97
-  signalShiftI: 1.33
+  signalShiftI: 1.94
   signalShiftQ: 0.91
-  gammaCorection: 1
+  gammaCorection: 1.06
   feedbackOn: 0
   feedbackMode: 0
   feedbackThresh: 0.1

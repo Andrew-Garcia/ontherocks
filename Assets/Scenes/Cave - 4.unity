@@ -2124,12 +2124,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4476945711435220, guid: ea86b75e1def14afc97195c6e24373ab,
     type: 2}
   m_PrefabInternal: {fileID: 1816747216}
---- !u!114 &1195695042 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114725110429718486, guid: ea86b75e1def14afc97195c6e24373ab,
-    type: 2}
-  m_PrefabInternal: {fileID: 1816747216}
-  m_Script: {fileID: 11500000, guid: 807f8d2bf0831224f8b2f509fa2f073f, type: 3}
 --- !u!1001 &1250903982
 Prefab:
   m_ObjectHideFlags: 0
@@ -3053,7 +3047,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4910789889902964, guid: 97ddc6b9b81db455aab03bf2df228daa, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -18.932827
+      value: -12.444617
       objectReference: {fileID: 0}
     - target: {fileID: 4910789889902964, guid: 97ddc6b9b81db455aab03bf2df228daa, type: 2}
       propertyPath: m_LocalPosition.y
@@ -3092,7 +3086,7 @@ Prefab:
         type: 2}
       propertyPath: m_FocusList.Array.data[1]
       value: 
-      objectReference: {fileID: 1195695042}
+      objectReference: {fileID: 0}
     - target: {fileID: 1076158698749460, guid: 97ddc6b9b81db455aab03bf2df228daa, type: 2}
       propertyPath: m_Name
       value: Main Camera
@@ -3140,7 +3134,7 @@ MonoBehaviour:
   g_showFeedback: 1
   g_showExtra: 0
   g_showBypass: 0
-  bleedOn: 1
+  bleedOn: 0
   crtMode: 0
   crtLinesMode: 0
   screenLinesNum: 0
@@ -4167,7 +4161,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Hidden/postVHSPro_Second
   m_Shader: {fileID: 4800000, guid: e2075d3cd3deb45c78fdc81aab250ef7, type: 3}
-  m_ShaderKeywords: VHS_BLEED_ON VHS_OLD_THREE_PHASE VHS_SIGNAL_TWEAK_ON
+  m_ShaderKeywords: VHS_OLD_THREE_PHASE VHS_SIGNAL_TWEAK_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0

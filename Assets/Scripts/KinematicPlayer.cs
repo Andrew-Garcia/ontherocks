@@ -684,7 +684,7 @@ public class KinematicPlayer : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject.CompareTag("DeathCollider"))
+		if (collision.gameObject.CompareTag("DeathCollider") || collision.gameObject.CompareTag("Lava"))
 		{
 			if (gameObject)
 			{

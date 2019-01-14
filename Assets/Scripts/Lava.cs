@@ -9,14 +9,18 @@ public class Lava : MonoBehaviour
 	public float upTime;
 	public float downTime;
 	public float blockOffset;
+	public float camHeightDelta;
 
 	float boxSize;
 
 	public LayerMask groundLayerMask;
 
+	CameraFocus camFocus;
+
 	private void Awake()
 	{
-		boxSize = GetComponent<BoxCollider2D>().size.y / 2;
+		camFocus = Camera.main.GetComponent<CameraFocus>();
+		//boxSize = GetComponent<BoxCollider2D>().size.y / 2;
 	}
 
 	float FindLevel()
@@ -58,12 +62,17 @@ public class Lava : MonoBehaviour
 
 	public IEnumerator Rise()
 	{
+		Debug.Log("run");
 		yield return new WaitForSeconds(startDelay);
 
 		while (true)
 		{
-			Vector2 startPos = transform.position, endPos = new Vector2(transform.position.x, (FindLevel() - blockOffset) - boxSize);
+			
+			Vector2 startPos = transform.position, endPos = new Vector2(transform.position.x, (FindLevel() - blockOffset)); // - boxSize);
 			float t = 0;
+
+			camFocus.offset.y += camHeightDelta;
+
 			while (t < transitionTime)
 			{
 				t += Time.deltaTime / transitionTime;
@@ -74,6 +83,9 @@ public class Lava : MonoBehaviour
 			yield return new WaitForSeconds(upTime);
 
 			t = 0;
+
+			camFocus.offset.y -= camHeightDelta;
+
 			while (t < transitionTime)
 			{
 				t += Time.deltaTime / transitionTime;

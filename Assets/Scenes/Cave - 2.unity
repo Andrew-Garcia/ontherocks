@@ -427,6 +427,30 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
     type: 2}
   m_PrefabInternal: {fileID: 1715059775}
+--- !u!21 &119973911
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Hidden/postVHSPro_First
+  m_Shader: {fileID: 4800000, guid: e5b137a48bf2c4c668927fd89b6ccbcd, type: 3}
+  m_ShaderKeywords: VHS_FILMGRAIN_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors: []
 --- !u!4 &124862612 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
@@ -1240,6 +1264,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
     type: 2}
   m_PrefabInternal: {fileID: 535813462}
+--- !u!21 &420903047
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Hidden/postVHSPro_Third
+  m_Shader: {fileID: 4800000, guid: de4e63e4455b14b8e8c57542f8089707, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _FeedbackTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _LastTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors: []
 --- !u!4 &423683140 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4744338573192370, guid: 6457c5c80de5cdf469fe17a6b03f7a14,
@@ -2762,6 +2818,30 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4848194860431216, guid: f9f2e6cdc60c840de9c25f866f0c9245,
     type: 2}
   m_PrefabInternal: {fileID: 906023769}
+--- !u!21 &925788044
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Hidden/postVHSPro_Tape
+  m_Shader: {fileID: 4800000, guid: caea6b3daf52a4416949b7b9c0146d77, type: 3}
+  m_ShaderKeywords: VHS_FILMGRAIN_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors: []
 --- !u!4 &937937136 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
@@ -2967,14 +3047,14 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: c274724060df042ccbf9574000c1717d,
     type: 2}
   m_PrefabInternal: {fileID: 2011836165}
---- !u!21 &1002825707
+--- !u!21 &977811965
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Hidden/postVHSPro_Third
-  m_Shader: {fileID: 4800000, guid: de4e63e4455b14b8e8c57542f8089707, type: 3}
+  m_Name: Hidden/postVHSPro_Forth
+  m_Shader: {fileID: 4800000, guid: 65c19848f188f4192a05ff1eece78fee, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -2986,10 +3066,6 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _FeedbackTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _LastTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -3014,6 +3090,30 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
     type: 2}
   m_PrefabInternal: {fileID: 1321083274}
+--- !u!21 &1093890528
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Hidden/postVHSPro_Clear
+  m_Shader: {fileID: 4800000, guid: 3c6a64923374747f7b15711533b5971a, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors: []
 --- !u!1001 &1105953556
 Prefab:
   m_ObjectHideFlags: 0
@@ -4229,6 +4329,34 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: c274724060df042ccbf9574000c1717d,
     type: 2}
   m_PrefabInternal: {fileID: 967032904}
+--- !u!21 &1564507694
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Hidden/postVHSPro_Second
+  m_Shader: {fileID: 4800000, guid: e2075d3cd3deb45c78fdc81aab250ef7, type: 3}
+  m_ShaderKeywords: VHS_BLEED_ON VHS_OLD_THREE_PHASE VHS_SIGNAL_TWEAK_ON
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _CurvesTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats: []
+    m_Colors: []
 --- !u!4 &1571145973 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: c274724060df042ccbf9574000c1717d,
@@ -4391,42 +4519,51 @@ MonoBehaviour:
   shader4: {fileID: 4800000, guid: 65c19848f188f4192a05ff1eece78fee, type: 3}
   shader_clear: {fileID: 4800000, guid: 3c6a64923374747f7b15711533b5971a, type: 3}
   shader_tape: {fileID: 4800000, guid: caea6b3daf52a4416949b7b9c0146d77, type: 3}
-  mat1: {fileID: 361656638}
-  mat2: {fileID: 1661345445}
-  mat3: {fileID: 1002825707}
-  mat4: {fileID: 463987007}
-  mat_clear: {fileID: 2073148918}
-  mat_tape: {fileID: 1945468371}
-  g_showCRT: 0
+  mat1: {fileID: 119973911}
+  mat2: {fileID: 1564507694}
+  mat3: {fileID: 420903047}
+  mat4: {fileID: 977811965}
+  mat_clear: {fileID: 1093890528}
+  mat_tape: {fileID: 925788044}
+  g_showCRT: 1
   g_showNoise: 1
   g_showJitter: 0
   g_showSignal: 1
   g_showFeedback: 0
   g_showExtra: 0
   g_showBypass: 0
-  bleedOn: 0
+  bleedOn: 1
   crtMode: 0
   crtLinesMode: 0
   screenLinesNum: 0
-  bleedAmount: 1
+  bleedAmount: 0.75
   bleedDebugOn: 0
   bleedCurveY:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 1
+      time: 0.26632306
+      value: 0.027760267
+      inSlope: Infinity
+      outSlope: Infinity
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.8208351
+      value: 1.2812538
       inSlope: 0
-      outSlope: -1
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 0
+      value: 0.6000061
       inSlope: -1
-      outSlope: 0
+      outSlope: -1
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -4526,13 +4663,13 @@ MonoBehaviour:
   jitterVAmount: 1
   jitterVSpeed: 1
   signalTweakOn: 1
-  signalAdjustY: 0.104
-  signalAdjustI: 0
-  signalAdjustQ: 0.008
-  signalShiftY: 0.97
-  signalShiftI: 1.94
-  signalShiftQ: 0.91
-  gammaCorection: 1.06
+  signalAdjustY: 0.177
+  signalAdjustI: -0.007
+  signalAdjustQ: 0.007
+  signalShiftY: 1.03
+  signalShiftI: 2
+  signalShiftQ: 0.82
+  gammaCorection: 1.3
   feedbackOn: 0
   feedbackMode: 0
   feedbackThresh: 0.1

@@ -3296,7 +3296,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: Hidden/postVHSPro_Second
   m_Shader: {fileID: 4800000, guid: e2075d3cd3deb45c78fdc81aab250ef7, type: 3}
-  m_ShaderKeywords: VHS_OLD_THREE_PHASE VHS_SIGNAL_TWEAK_ON
+  m_ShaderKeywords: VHS_BLEED_ON VHS_OLD_THREE_PHASE VHS_SIGNAL_TWEAK_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -7694,6 +7694,10 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1961311556483154, guid: 3699d3223b32c495c9c14f44cd65ebed, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3699d3223b32c495c9c14f44cd65ebed, type: 2}
   m_IsPrefabAsset: 0
@@ -8598,7 +8602,7 @@ Light:
   serializedVersion: 8
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1.5
+  m_Intensity: 1.56
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -10041,18 +10045,18 @@ MonoBehaviour:
   mat4: {fileID: 1491256448}
   mat_clear: {fileID: 364353640}
   mat_tape: {fileID: 744761661}
-  g_showCRT: 0
-  g_showNoise: 1
+  g_showCRT: 1
+  g_showNoise: 0
   g_showJitter: 0
-  g_showSignal: 0
+  g_showSignal: 1
   g_showFeedback: 0
   g_showExtra: 0
   g_showBypass: 0
-  bleedOn: 0
+  bleedOn: 1
   crtMode: 0
   crtLinesMode: 2
   screenLinesNum: 480
-  bleedAmount: 0.56
+  bleedAmount: 0.6
   bleedDebugOn: 0
   bleedCurveY:
     serializedVersion: 2
@@ -10170,13 +10174,13 @@ MonoBehaviour:
   jitterVAmount: 1
   jitterVSpeed: 1
   signalTweakOn: 1
-  signalAdjustY: 0.04
-  signalAdjustI: 0.089
-  signalAdjustQ: 0.005
-  signalShiftY: 1.02
-  signalShiftI: 1.38
-  signalShiftQ: 0.96
-  gammaCorection: 1.04
+  signalAdjustY: 0.028
+  signalAdjustI: 0.12
+  signalAdjustQ: -0.007
+  signalShiftY: 1.03
+  signalShiftI: 1.65
+  signalShiftQ: 0.95
+  gammaCorection: 1.17
   feedbackOn: 0
   feedbackMode: 0
   feedbackThresh: 0.232

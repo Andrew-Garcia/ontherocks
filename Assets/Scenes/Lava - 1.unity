@@ -2004,7 +2004,12 @@ Prefab:
     - target: {fileID: 20318667780949486, guid: 6457c5c80de5cdf469fe17a6b03f7a14,
         type: 2}
       propertyPath: m_HDR
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 20318667780949486, guid: 6457c5c80de5cdf469fe17a6b03f7a14,
+        type: 2}
+      propertyPath: m_RenderingPath
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6457c5c80de5cdf469fe17a6b03f7a14, type: 2}
@@ -2186,7 +2191,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 2045880, guid: 00655ab05886f9341a63e33ffd2001a2, type: 2}
       propertyPath: m_HDR
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2045880, guid: 00655ab05886f9341a63e33ffd2001a2, type: 2}
       propertyPath: m_CullingMask.m_Bits

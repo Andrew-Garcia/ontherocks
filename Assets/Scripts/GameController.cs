@@ -64,8 +64,8 @@ public class GameController : MonoBehaviour {
 			GameObject lavaObject = GameObject.FindGameObjectWithTag("Lava");
 			if (lavaObject)
 			{
-				Lava lava = lavaObject.GetComponent<Lava>();
-				lava.StartCoroutine(lava.Rise());
+				Eruption lava = lavaObject.GetComponent<Eruption>();
+				lava.StartCoroutine(lava.Erupt());
 			}
 		}
 	}

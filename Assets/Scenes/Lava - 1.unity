@@ -2136,13 +2136,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 574438912}
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -55.2, z: 15.1}
-  m_LocalScale: {x: 3.7916, y: 1.8958, z: 3.7916}
+  m_LocalScale: {x: 3.7916, y: 1, z: 3.7916}
   m_Children: []
   m_Father: {fileID: 1051226155}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &611133661
 Prefab:
   m_ObjectHideFlags: 0
@@ -5471,6 +5471,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 114026758459305598, guid: 34fb14b628c254573a442b21797a0072,
+        type: 2}
+      propertyPath: lavaBounceVelocity
+      value: 45
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34fb14b628c254573a442b21797a0072, type: 2}
   m_IsPrefabAsset: 0
@@ -6466,6 +6471,11 @@ Prefab:
     - target: {fileID: 4476945711435220, guid: ea86b75e1def14afc97195c6e24373ab, type: 2}
       propertyPath: m_RootOrder
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114661991767840912, guid: ea86b75e1def14afc97195c6e24373ab,
+        type: 2}
+      propertyPath: lavaBounceVelocity
+      value: 45
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea86b75e1def14afc97195c6e24373ab, type: 2}

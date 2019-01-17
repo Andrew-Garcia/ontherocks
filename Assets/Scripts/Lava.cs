@@ -16,10 +16,15 @@ public class Lava : MonoBehaviour
 	public LayerMask groundLayerMask;
 
 	CameraFocus camFocus;
+	float camStart;
+	float camEnd;
 
 	private void Awake()
 	{
 		camFocus = Camera.main.GetComponent<CameraFocus>();
+		camStart = camFocus.offset.y;
+		camEnd = camStart + camHeightDelta;
+
 		//boxSize = GetComponent<BoxCollider2D>().size.y / 2;
 	}
 
@@ -62,11 +67,8 @@ public class Lava : MonoBehaviour
 
 	public IEnumerator Rise()
 	{
-
 		Vector2 startPos = transform.position, endPos = new Vector2(transform.position.x, (FindLevel() - blockOffset)); // - boxSize);
 		float t = 0;
-
-		float camStart = camFocus.offset.y, camEnd = camFocus.offset.y + camHeightDelta;
 
 		while (t < 1)
 		{
@@ -84,7 +86,7 @@ public class Lava : MonoBehaviour
 		{
 			t += Time.deltaTime / transitionTime;
 			transform.position = Vector2.Lerp(endPos, startPos, t);
-			camFocus.offset.y = Mathf.Lerp(camStart, camEnd, t);
+			camFocus.offset.y = Mathf.Lerp(camEnd, camStart, t);
 			yield return null;
 		}
 	}

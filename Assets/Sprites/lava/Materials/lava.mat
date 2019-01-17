@@ -25,5 +25,5 @@ Material:
     m_Floats:
     - _Test: 0
     m_Colors:
-    - _WaveA: {r: 1, g: 0, b: 0.3, a: 12}
-    - _WaveB: {r: 1, g: 1, b: 0.25, a: 12}
+    - _WaveA: {r: 0, g: -1, b: 0.3, a: 12}
+    - _WaveB: {r: 1, g: -1, b: 0.25, a: 12}

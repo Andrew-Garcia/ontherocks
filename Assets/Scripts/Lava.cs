@@ -16,10 +16,15 @@ public class Lava : MonoBehaviour
 	public LayerMask groundLayerMask;
 
 	CameraFocus camFocus;
+	float camStart;
+	float camEnd;
 
 	private void Awake()
 	{
 		camFocus = Camera.main.GetComponent<CameraFocus>();
+		camStart = camFocus.offset.y;
+		camEnd = camStart + camHeightDelta;
+
 		//boxSize = GetComponent<BoxCollider2D>().size.y / 2;
 	}
 
@@ -62,38 +67,27 @@ public class Lava : MonoBehaviour
 
 	public IEnumerator Rise()
 	{
-		Debug.Log("run");
-		yield return new WaitForSeconds(startDelay);
+		Vector2 startPos = transform.position, endPos = new Vector2(transform.position.x, (FindLevel() - blockOffset)); // - boxSize);
+		float t = 0;
 
-		while (true)
+		while (t < 1)
 		{
-			
-			Vector2 startPos = transform.position, endPos = new Vector2(transform.position.x, (FindLevel() - blockOffset)); // - boxSize);
-			float t = 0;
+			t += Time.deltaTime / transitionTime;
+			transform.position = Vector2.Lerp(startPos, endPos, t);
+			camFocus.offset.y = Mathf.Lerp(camStart, camEnd, t);
+			yield return null;
+		}
 
-			camFocus.offset.y += camHeightDelta;
+		yield return new WaitForSeconds(upTime);
 
-			while (t < transitionTime)
-			{
-				t += Time.deltaTime / transitionTime;
-				transform.position = Vector2.Lerp(startPos, endPos, t);
-				yield return null;
-			}
+		t = 0;
 
-			yield return new WaitForSeconds(upTime);
-
-			t = 0;
-
-			camFocus.offset.y -= camHeightDelta;
-
-			while (t < transitionTime)
-			{
-				t += Time.deltaTime / transitionTime;
-				transform.position = Vector2.Lerp(endPos, startPos, t);
-				yield return null;
-			}
-
-			yield return new WaitForSeconds(downTime);
+		while (t < 1)
+		{
+			t += Time.deltaTime / transitionTime;
+			transform.position = Vector2.Lerp(endPos, startPos, t);
+			camFocus.offset.y = Mathf.Lerp(camEnd, camStart, t);
+			yield return null;
 		}
 	}
 

@@ -51,6 +51,7 @@ public class KinematicPlayer : MonoBehaviour
 	[Header("Player settings")]
 	public bool freezeOnRockJump = true;
 	public int playerNumber = 1;
+	public float lavaBounceVelocity = 7f;
 	[SerializeField] AudioClip deathClip;
 
 	[Header("Combat settings")]
@@ -684,10 +685,17 @@ public class KinematicPlayer : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject.CompareTag("DeathCollider") || collision.gameObject.CompareTag("Lava"))
+		if (collision.gameObject.transform.parent.CompareTag("Lava"))
+		{
+			// take damage and throw player based on health/percent
+			velocity.y = lavaBounceVelocity;
+		}
+
+		if (collision.gameObject.CompareTag("DeathCollider"))
 		{
 			if (gameObject)
 			{
+				// death on entering the DeathCollider
 				PlayerDie();
 			}
 		}

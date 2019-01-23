@@ -181,7 +181,12 @@ MonoBehaviour:
   smallForce: 100
   constForce: 0
   destroyTime: 3
+  spawnPickUpPercent: 10
   jumpDestroyParticles: {fileID: 1050860254931514, guid: 5addbf2f46a1f544893ab742dd2503cd,
+    type: 2}
+  superChargeFire: {fileID: 1432293298060618, guid: 6d652da740f5014459538fec1e7af4dc,
+    type: 2}
+  superPickUp: {fileID: 1876542261369016, guid: dbf5160aeaf8971499fcd0ef49ddc641,
     type: 2}
   destroyOther: 0
   contactFilter:

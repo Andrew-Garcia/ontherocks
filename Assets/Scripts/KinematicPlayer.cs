@@ -106,6 +106,9 @@ public class KinematicPlayer : MonoBehaviour
 	public ParticleSystem superPunchFire;
 	public GameObject incenseSmoke;
 
+	// used for storing the current taunt smoke for stopping it
+	GameObject currentIncenseSmoke;
+
 	GameController gc;
 
 	bool onlyOnce;
@@ -269,6 +272,7 @@ public class KinematicPlayer : MonoBehaviour
 				{
 					currentState = PlayerState.TAUNT2;
 					anim.SetBool("taunt2", true);
+					anim.SetTrigger("taunt2trigger");
 				}
 
 				break;
@@ -305,7 +309,16 @@ public class KinematicPlayer : MonoBehaviour
 
 			case PlayerState.TAUNT2:
 				velocity.x = 0;
-				if (Input.GetButtonUp(getPlayerKey("Taunt2"))) anim.SetBool("taunt2", false);
+				if (Input.GetButtonUp(getPlayerKey("Taunt2")))
+				{
+					if (currentIncenseSmoke)
+					{
+						var main = currentIncenseSmoke.GetComponent<ParticleSystem>().main;
+						main.loop = false;
+						currentIncenseSmoke = null;
+					}
+					anim.SetBool("taunt2", false);
+				}
 
 				break;
 		}
@@ -830,7 +843,7 @@ public class KinematicPlayer : MonoBehaviour
 	// run function in animation to spawn incense particles
 	public void LightIncenseTaunt()
 	{
-		GameObject smoke = Instantiate(incenseSmoke, transform.position + new Vector3(0.7f, -0.43f, 0), Quaternion.identity);
+		currentIncenseSmoke = Instantiate(incenseSmoke, transform.position + new Vector3(facingLeft ? -0.9f : 0.72f, -0.43f, 0), Quaternion.identity);
 	}
 
 	// run function in the animation to change back to move state

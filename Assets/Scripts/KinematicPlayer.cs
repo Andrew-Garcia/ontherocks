@@ -17,6 +17,7 @@ public class KinematicPlayer : MonoBehaviour
 	bool grounded;
 	bool lastGrounded;
 
+	// variables for jumping
 	bool doubleJumped;
 	private float lastJumpTime = 0;
 	private float coyoteTime = 0;
@@ -32,6 +33,10 @@ public class KinematicPlayer : MonoBehaviour
 	Vector2 velocity;
 	BoxCollider2D col;
 
+	// collision velocity calculated in Move() to be used in OnTriggerEnter()
+	Vector2 collisionVelocity;
+
+	// used in Move() to register collisions
 	RaycastHit2D[] hitBuffer = new RaycastHit2D[16];
 	List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
 
@@ -42,6 +47,7 @@ public class KinematicPlayer : MonoBehaviour
 	private float grabbedRocksPositionX;
 	private float wallCheckX;
 
+	// current grabbed rock
 	private RockScript grabbedRock = null;
 
 	Vector2 aimingDirection;
@@ -57,6 +63,7 @@ public class KinematicPlayer : MonoBehaviour
 	[Header("Combat settings")]
 	public float stunTime;
 	public float selectedRockTimer = 0.5f;
+	public float damage = 0;
 
 	[Header("Movement settings")]
 	public float speed = 5f;
@@ -76,15 +83,24 @@ public class KinematicPlayer : MonoBehaviour
 	public int blockFrames = 15;
 	int blockNumber = 0;
 
+	// used to store if the next/current rock should be charged
+	// 3 options on when the block is charged:
+	//   > we're already holding a block, done in GetHit()
+	//   > the next block we pick up, done in Grab()
+	//   > the next block we punch, done in Punch()
+	bool superPunchChargeTrigger = false;
+
 	[Header("References")]
 	public Transform wallChecker;
+	public Transform rayOrigin;
+	public Transform grabbedRocksPosition;
 
 	LayerMask groundLayer;
 
-	public Transform rayOrigin;
-	public Transform grabbedRocksPosition;
+	[Header("Particles")]
     public ParticleSystem dashDust;
 	public ParticleSystem landingDust;
+	public ParticleSystem superPunchFire;
 
 	GameController gc;
 
@@ -92,7 +108,7 @@ public class KinematicPlayer : MonoBehaviour
 
 	ContactFilter2D rockContactFilter;
 
-    //Animation Variables
+    // Animation Variables
     bool isPunching;
     bool lastFacingLeft;
 
@@ -307,6 +323,9 @@ public class KinematicPlayer : MonoBehaviour
 				hitBufferList.Add(hitBuffer[i]);
 			}
 
+			// set collision velocity
+			if (hitBufferList.Count > 0) collisionVelocity = velocity;
+
 			// in standard stun: when you hit a rock, bounce off
 			if (currentState == PlayerState.STANDARDSTUN && hitBufferList.Count > 0) 
 			{
@@ -484,8 +503,16 @@ public class KinematicPlayer : MonoBehaviour
 	bool Grab()
 	{
 		RockScript rockScript = selectedRock;
+
 		if (rockScript && rockScript.getGrabbed(this))
 		{
+			// if we have supercharge, charge the next block we grab
+			if (superPunchChargeTrigger)
+			{
+				rockScript.ChargeBlock();
+				superPunchChargeTrigger = false;
+			}
+
 			grabbedRock = rockScript;
 			return true;
 		}
@@ -506,12 +533,19 @@ public class KinematicPlayer : MonoBehaviour
 		// otherwise...
 		else
 		{
-			// use the rock that's selected and punch it
+			// use the rock that's selected and punch it (should be the one in front of you)
 			rockScript = selectedRock;
 
-			// if there's a rock in front of the selected rock, don't destroy it when punched (to simulate digging)
 			if (rockScript)
 			{
+				// if we have superpunch, charge the block we're punching
+				if (superPunchChargeTrigger)
+				{
+					rockScript.ChargeBlock();
+					superPunchChargeTrigger = false;
+				}
+
+				// if there's a rock in front of the selected rock, don't destroy it when punched (to simulate digging)
 				Vector2 rockPos = new Vector2(rockScript.transform.position.x, rockScript.transform.position.y);
 				
 				if (Physics2D.Raycast(rockPos + rockScript.c2d.offset, getAimingDirection(), rockScript.isBig ? 2f : 1f, groundLayer))
@@ -529,6 +563,9 @@ public class KinematicPlayer : MonoBehaviour
 		Physics2D.IgnoreCollision(GetComponent<Collider2D>(), rockScript.c2d);
 
 		rockScript.getPushed(getAimingDirection(), this);
+
+		// lose superpunch when you punch a block
+		if (superPunchFire.isPlaying) superPunchFire.Stop();
 
 		// animation
         bool aimingUp = false;
@@ -581,6 +618,7 @@ public class KinematicPlayer : MonoBehaviour
         return true;
 	}
 
+	// blocks counted in GetHit()
 	IEnumerator Block()
 	{
 		anim.SetBool("Block", true);
@@ -595,6 +633,7 @@ public class KinematicPlayer : MonoBehaviour
 		anim.SetBool("Block", false);
 	}
 
+	// rock jump function
 	IEnumerator RockJump()
 	{
 		currentState = PlayerState.ROCKJUMP;
@@ -606,7 +645,7 @@ public class KinematicPlayer : MonoBehaviour
 
 		int i = 0;
 
-		// set rock to state with no outsidunitye velocity
+		// set rock to state with no physics velocity
 		grabbedRock.currentState = RockScript.state.SCRIPTMOVE;
 
 		Vector3 rockEnd = transform.position - (grabbedRock.isBig ? new Vector3(1f, 1.375f) 
@@ -657,6 +696,23 @@ public class KinematicPlayer : MonoBehaviour
 		{
 			velocity = direction * 0.3f;
 			blockNumber++;
+
+			// on third block, gain supercharge
+			if (blockNumber == 3)
+			{
+				superPunchFire.Play();
+				superPunchChargeTrigger = true;
+
+				// if we're holding a rock, set it to be super charged
+				if (grabbedRock)
+				{
+					grabbedRock.ChargeBlock();
+					superPunchChargeTrigger = false;
+				}
+
+				blockNumber = 0;
+			}
+
 			return;
 		}
 		StartCoroutine(Stun(-direction));
@@ -676,8 +732,11 @@ public class KinematicPlayer : MonoBehaviour
 
 	public void PlayerDie()
 	{
-		gc.onPlayerDie(playerNumber);
+		// lose superpunch when you die
+		if (superPunchFire.isPlaying) superPunchFire.Stop();
 		if (selectedRock) selectedRock.highlighted = 0;
+
+		gc.onPlayerDie(playerNumber);
 		Camera.main.GetComponent<CameraFocus>().RemoveFocus(transform);
 		AudioSource.PlayClipAtPoint(deathClip, transform.position, 10f);
 		Destroy(gameObject);
@@ -685,11 +744,7 @@ public class KinematicPlayer : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.gameObject.transform.parent.CompareTag("Lava"))
-		{
-			// take damage and throw player based on health/percent
-			velocity.y = lavaBounceVelocity;
-		}
+		if ((1 << collision.gameObject.layer) == LayerMask.GetMask("Ground"))	Debug.Log(collisionVelocity);
 
 		if (collision.gameObject.CompareTag("DeathCollider"))
 		{
@@ -697,6 +752,17 @@ public class KinematicPlayer : MonoBehaviour
 			{
 				// death on entering the DeathCollider
 				PlayerDie();
+			}
+		}
+
+		Transform parent = collision.gameObject.transform.parent;
+
+		if (parent)
+		{
+			if (parent.CompareTag("Lava"))
+			{
+				// take damage and throw player based on health/percent
+				velocity.y = lavaBounceVelocity;
 			}
 		}
 	}

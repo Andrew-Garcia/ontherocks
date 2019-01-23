@@ -108,7 +108,7 @@ InputManager:
     negativeButton: 
     positiveButton: joystick 1 button 5
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: e
     gravity: 1000
     dead: 0.001
     sensitivity: 1000
@@ -162,7 +162,7 @@ InputManager:
     sensitivity: 1000
     snap: 1
     invert: 0
-    type: 2
+    type: 0
     axis: 8
     joyNum: 6
   - serializedVersion: 3
@@ -178,7 +178,7 @@ InputManager:
     sensitivity: 1000
     snap: 1
     invert: 1
-    type: 2
+    type: 0
     axis: 9
     joyNum: 6
   - serializedVersion: 3

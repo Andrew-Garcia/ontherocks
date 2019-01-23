@@ -12,6 +12,7 @@ public class RockScript : MonoBehaviour {
 	}
 
 	public bool isBig;
+	bool superCharged;
 	public state currentState = state.FIXED;
 
 	private float timePushed = 0;
@@ -36,6 +37,7 @@ public class RockScript : MonoBehaviour {
 
 	[Header("Particles")]
 	public GameObject jumpDestroyParticles;
+	public GameObject superChargeFire;
 
     private Color startColor;
 	private Rigidbody2D rb2d;
@@ -174,6 +176,14 @@ public class RockScript : MonoBehaviour {
 		}
 	}
 
+	public void ChargeBlock()
+	{
+		superCharged = true;
+
+		GameObject fireParticles = Instantiate(superChargeFire, transform) as GameObject;
+		fireParticles.transform.localPosition = isBig ? new Vector3(1, 1, 0) : new Vector3(0.5f, 0.5f, 0);
+	}
+
 	private void reduceColliderSize() {
 		c2d.size = c2d.size * 0.9f;
 	}
@@ -244,10 +254,12 @@ public class RockScript : MonoBehaviour {
 			return;
 		}
 		
+		
 		if (other.gameObject.CompareTag("Player")) {
 			FindObjectOfType<GameController>().freezeFrame();
 			other.gameObject.GetComponent<KinematicPlayer>().GetHit(other.relativeVelocity);
 		}
+		
 
 		if (other.gameObject.CompareTag("Rock") && destroyOther) { 
 			if (other.gameObject.GetComponent<RockScript>().attachedObject) other.gameObject.GetComponent<RockScript>().attachedObject.DestoryObject();
@@ -257,4 +269,15 @@ public class RockScript : MonoBehaviour {
 		// Get destroyed
 		HitDestroy();
 	}
+
+	/*
+	private void OnTriggerEnter2D(Collider2D collision)
+	{
+		if (currentState == state.PUSHED && collision.gameObject.CompareTag("Player"))
+		{
+			FindObjectOfType<GameController>().freezeFrame();
+			collision.gameObject.GetComponent<KinematicPlayer>().GetHit(pushSpeed * Vector2.right);
+		}
+	}
+	*/
 }

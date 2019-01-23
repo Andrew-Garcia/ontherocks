@@ -186,6 +186,8 @@ MonoBehaviour:
   destroyTime: 3
   jumpDestroyParticles: {fileID: 1050860254931514, guid: 5addbf2f46a1f544893ab742dd2503cd,
     type: 2}
+  superChargeFire: {fileID: 1432293298060618, guid: 6d652da740f5014459538fec1e7af4dc,
+    type: 2}
   destroyOther: 0
   contactFilter:
     useTriggers: 0

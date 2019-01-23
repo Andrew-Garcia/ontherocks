@@ -262,6 +262,48 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c274724060df042ccbf9574000c1717d, type: 2}
   m_IsPrefabAsset: 0
+--- !u!1001 &63672280
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4556364347228598, guid: c88c621f2b4043147808146275816901, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0.752
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556364347228598, guid: c88c621f2b4043147808146275816901, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -0.263
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556364347228598, guid: c88c621f2b4043147808146275816901, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556364347228598, guid: c88c621f2b4043147808146275816901, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556364347228598, guid: c88c621f2b4043147808146275816901, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556364347228598, guid: c88c621f2b4043147808146275816901, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556364347228598, guid: c88c621f2b4043147808146275816901, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4556364347228598, guid: c88c621f2b4043147808146275816901, type: 2}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c88c621f2b4043147808146275816901, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!1 &74425730
 GameObject:
   m_ObjectHideFlags: 0
@@ -1150,30 +1192,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
     type: 2}
   m_PrefabInternal: {fileID: 1304459492}
---- !u!21 &361656638
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Hidden/postVHSPro_First
-  m_Shader: {fileID: 4800000, guid: e5b137a48bf2c4c668927fd89b6ccbcd, type: 3}
-  m_ShaderKeywords: VHS_FILMGRAIN_ON
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors: []
 --- !u!4 &362419864 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
@@ -1481,34 +1499,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01ca3a0ae4ac841ec9ef96707b7cf399, type: 2}
   m_IsPrefabAsset: 0
---- !u!21 &463987007
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Hidden/postVHSPro_Forth
-  m_Shader: {fileID: 4800000, guid: 65c19848f188f4192a05ff1eece78fee, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _FeedbackTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors: []
 --- !u!1001 &469521997
 Prefab:
   m_ObjectHideFlags: 0
@@ -4755,34 +4745,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
     type: 2}
   m_PrefabInternal: {fileID: 213716014}
---- !u!21 &1661345445
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Hidden/postVHSPro_Second
-  m_Shader: {fileID: 4800000, guid: e2075d3cd3deb45c78fdc81aab250ef7, type: 3}
-  m_ShaderKeywords: VHS_OLD_THREE_PHASE VHS_SIGNAL_TWEAK_ON
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _CurvesTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors: []
 --- !u!4 &1669653811 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4849057262664452, guid: 01ca3a0ae4ac841ec9ef96707b7cf399,
@@ -5605,30 +5567,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4209eb921aeae45039f8fd01c4867a2d, type: 2}
   m_IsPrefabAsset: 0
---- !u!21 &1945468371
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Hidden/postVHSPro_Tape
-  m_Shader: {fileID: 4800000, guid: caea6b3daf52a4416949b7b9c0146d77, type: 3}
-  m_ShaderKeywords: VHS_FILMGRAIN_ON
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors: []
 --- !u!1001 &1957743578
 Prefab:
   m_ObjectHideFlags: 0
@@ -6009,30 +5947,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01ca3a0ae4ac841ec9ef96707b7cf399, type: 2}
   m_IsPrefabAsset: 0
---- !u!21 &2073148918
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Hidden/postVHSPro_Clear
-  m_Shader: {fileID: 4800000, guid: 3c6a64923374747f7b15711533b5971a, type: 3}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats: []
-    m_Colors: []
 --- !u!1001 &2077036965
 Prefab:
   m_ObjectHideFlags: 0

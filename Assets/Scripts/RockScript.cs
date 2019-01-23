@@ -254,12 +254,10 @@ public class RockScript : MonoBehaviour {
 			return;
 		}
 		
-		
 		if (other.gameObject.CompareTag("Player")) {
 			FindObjectOfType<GameController>().freezeFrame();
-			other.gameObject.GetComponent<KinematicPlayer>().GetHit(other.relativeVelocity);
+			other.gameObject.GetComponent<KinematicPlayer>().GetHit(other.relativeVelocity, superCharged);
 		}
-		
 
 		if (other.gameObject.CompareTag("Rock") && destroyOther) { 
 			if (other.gameObject.GetComponent<RockScript>().attachedObject) other.gameObject.GetComponent<RockScript>().attachedObject.DestoryObject();
@@ -273,11 +271,18 @@ public class RockScript : MonoBehaviour {
 	/*
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (currentState == state.PUSHED && collision.gameObject.CompareTag("Player"))
+		if (currentState != state.PUSHED)
+		{
+			return;
+		}
+
+		if (collision.gameObject.CompareTag("Player"))
 		{
 			FindObjectOfType<GameController>().freezeFrame();
-			collision.gameObject.GetComponent<KinematicPlayer>().GetHit(pushSpeed * Vector2.right);
+			collision.gameObject.GetComponent<KinematicPlayer>().GetHit(-rb2d.velocity);
 		}
+
+		HitDestroy();
 	}
 	*/
 }

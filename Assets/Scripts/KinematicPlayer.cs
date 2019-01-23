@@ -8,10 +8,13 @@ public class KinematicPlayer : MonoBehaviour
 	{
 		MOVE,
 		ROCKJUMP,
+		ROCKGLIDE,
 		BLOCK,
 		STANDARDSTUN,
 		BLOCKSTUN,
 		SUPERPUNCHSTUN,
+		TAUNT1,
+		TAUNT2,
 	}
 
 	bool grounded;
@@ -101,6 +104,7 @@ public class KinematicPlayer : MonoBehaviour
     public ParticleSystem dashDust;
 	public ParticleSystem landingDust;
 	public ParticleSystem superPunchFire;
+	public GameObject incenseSmoke;
 
 	GameController gc;
 
@@ -240,33 +244,85 @@ public class KinematicPlayer : MonoBehaviour
 				// block input
 				if (Input.GetButtonDown(getPlayerKey("Block")))
 				{
+					currentState = PlayerState.BLOCK;
 					StartCoroutine(Block());
+				}
+
+				// rock glide input
+				if (Input.GetButtonDown(getPlayerKey("RockGlide")) && !grounded && grabbedRock)
+				{
+					currentState = PlayerState.ROCKGLIDE;
+
+					// set current rock to state with no physics
+					grabbedRock.currentState = RockScript.state.SCRIPTMOVE;
+
+				}
+
+				// taunt input
+				if (Input.GetButtonDown(getPlayerKey("Taunt1")) && grounded)
+				{
+					currentState = PlayerState.TAUNT1;
+					anim.SetTrigger("taunt1");
+				}
+
+				if (Input.GetButtonDown(getPlayerKey("Taunt2")) && grounded)
+				{
+					currentState = PlayerState.TAUNT2;
+					anim.SetBool("taunt2", true);
 				}
 
 				break;
 
 			case PlayerState.ROCKJUMP:
+
+				break;
+
+			case PlayerState.ROCKGLIDE:
+				velocity.x += Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed / 10;
+				if (Mathf.Abs(velocity.x) > speed) velocity.x = Mathf.Sign(velocity.x) * speed;
+				if (velocity.y < 0) velocity.y = -8;
+
+				grabbedRock.transform.position = transform.position;
+
+				if (grounded || Input.GetButtonUp(getPlayerKey("RockGlide")))
+				{
+					currentState = PlayerState.MOVE;
+					grabbedRock.currentState = RockScript.state.HELD;
+				}
+
+				break;
+
 			case PlayerState.STANDARDSTUN:
-				
-				
 				break;
 
 			case PlayerState.BLOCK:
 				if (grounded) velocity.x = 0;
 				break;
+
+			case PlayerState.TAUNT1:
+				velocity.x = 0;
+				break;
+
+			case PlayerState.TAUNT2:
+				velocity.x = 0;
+				if (Input.GetButtonUp(getPlayerKey("Taunt2"))) anim.SetBool("taunt2", false);
+
+				break;
 		}
 
         if (grounded) anim.SetFloat("Velocity", Mathf.Abs(velocity.x));
+		
 	}
 
 	void FixedUpdate()
 	{
+		// set y velocity in fixed update so it's synced with Move()
 		if (freezeOnRockJump)
 		{
-			if (currentState != PlayerState.ROCKJUMP) velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+			if (currentState != PlayerState.ROCKJUMP && (currentState != PlayerState.ROCKGLIDE || velocity.y > 0)) velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
 		}
 		else {
-			velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
+			if (currentState != PlayerState.ROCKGLIDE || velocity.y > 0) velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
 		}
 
 		Vector2 deltaPosition = velocity * Time.deltaTime;
@@ -324,59 +380,89 @@ public class KinematicPlayer : MonoBehaviour
 			}
 
 			// set collision velocity
-			if (hitBufferList.Count > 0) collisionVelocity = velocity;
+			/*
+			if (hitBufferList.Count > 0)
+			{
+				collisionVelocity = velocity;
+				//Debug.Log("hit");
+			}
+			*/
 
-			// in standard stun: when you hit a rock, bounce off
+			// in standard stun: when you hit a rock at a certain velocity, bounce off
 			if (currentState == PlayerState.STANDARDSTUN && hitBufferList.Count > 0) 
 			{
-				if (yMove) velocity.y = Vector2.Reflect(velocity, hitBuffer[0].normal).y;
-				else velocity.x = Vector2.Reflect(velocity, hitBufferList[0].normal).x;
+				if (yMove && Mathf.Abs(velocity.y) > 10)
+				{
+					velocity.y = Vector2.Reflect(velocity, hitBuffer[0].normal).y;
+				}
+				else if (!yMove && Mathf.Abs(velocity.x) > 10)
+				{
+					velocity.x = Vector2.Reflect(velocity, hitBufferList[0].normal).x;
+				}
+
+				velocity /= 1.025f;
 			}
+			
 
 			// in superpunch stun: when you hit a rock, slow down
 			if (currentState == PlayerState.SUPERPUNCHSTUN && hitBufferList.Count > 0)
 			{
-				//velocity /= 2;
-				Debug.Log("oof");
+				if (yMove && Mathf.Abs(velocity.y) > 10)
+				{
+					for (int i = 0; i < hitBufferList.Count; i++)
+					{
+						hitBufferList[i].transform.GetComponent<RockScript>().HitDestroy();
+					}
+
+					velocity /= 1.25f;
+				}
+				else if (!yMove && Mathf.Abs(velocity.x) > 10)
+				{
+					for (int i = 0; i < hitBufferList.Count; i++)
+					{
+						hitBufferList[i].transform.GetComponent<RockScript>().HitDestroy();
+					}
+
+					velocity /= 1.25f;
+				}
 			}
 
 			for (int i = 0; i < hitBufferList.Count; i++)
 			{
-				if (currentState != PlayerState.STANDARDSTUN && currentState != PlayerState.SUPERPUNCHSTUN)
+				if (yMove)
 				{
-					if (yMove)
+					if (hitBufferList[i].normal.y > 0.9f)
 					{
-						if (hitBufferList[i].normal.y > 0.9f)
-						{
-							grounded = true;
-						}
-
-						velocity.y = 0;
+						grounded = true;
 					}
-					else
+
+					// reset vertical velocity unless we're stunned, then allow bouncing/colliding vertically above a certain threshold
+					if ((currentState != PlayerState.SUPERPUNCHSTUN && currentState != PlayerState.STANDARDSTUN) || Mathf.Abs(velocity.y) < 10) velocity.y = 0;
+				}
+				else
+				{
+					if (grounded && currentState != PlayerState.STANDARDSTUN && currentState != PlayerState.SUPERPUNCHSTUN)
 					{
-						if (grounded)
+						// position to check block in
+						Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.9f, 1f);
+
+						// position to step up into
+						Vector2 newPos = new Vector2(-hitBuffer[i].normal.x * 0.1f, 1f);
+
+						RaycastHit2D[] results = new RaycastHit2D[16];
+
+						// if we run into a block on the side and there is an empty space above it...
+						int stepUpColliders = Physics2D.BoxCast((Vector2)transform.position + direction + col.offset, 
+							col.size, 0, Vector2.one, rockContactFilter, results, 0);
+
+						// step up
+						if (stepUpColliders == 0)
 						{
-							// position to check block in
-							Vector2 direction = new Vector2(-hitBuffer[i].normal.x * 0.9f, 1f);
-
-							// position to step up into
-							Vector2 newPos = new Vector2(-hitBuffer[i].normal.x * 0.1f, 1f);
-
-							RaycastHit2D[] results = new RaycastHit2D[16];
-
-							// if we run into a block on the side and there is an empty space above it...
-							int stepUpColliders = Physics2D.BoxCast((Vector2)transform.position + direction + col.offset, 
-								col.size, 0, Vector2.one, rockContactFilter, results, 0);
-
-							// step up
-							if (stepUpColliders == 0)
-							{
-								rb2d.position = rb2d.position + newPos;
-							}
+							rb2d.position = rb2d.position + newPos;
 						}
 					}
 				}
+				
 
 				float modifiedDistance = hitBufferList[i].distance - shellRadius;
 				distance = modifiedDistance < distance ? modifiedDistance : distance;
@@ -622,7 +708,6 @@ public class KinematicPlayer : MonoBehaviour
 	IEnumerator Block()
 	{
 		anim.SetBool("Block", true);
-		currentState = PlayerState.BLOCK;
 
 		for (int i = 0; i < blockFrames; i++)
 		{
@@ -690,7 +775,7 @@ public class KinematicPlayer : MonoBehaviour
 		return aimingDirection;
 	}
 
-	public void GetHit(Vector2 direction)
+	public void GetHit(Vector2 direction, bool superCharged)
 	{
 		if (currentState == PlayerState.BLOCK) 
 		{
@@ -715,12 +800,12 @@ public class KinematicPlayer : MonoBehaviour
 
 			return;
 		}
-		StartCoroutine(Stun(-direction));
+		StartCoroutine(Stun(-direction, superCharged));
 	}
 
-	IEnumerator Stun(Vector2 direction)
+	IEnumerator Stun(Vector2 direction, bool superPunchStun)
 	{
-		currentState = PlayerState.STANDARDSTUN;
+		currentState = superPunchStun ? PlayerState.SUPERPUNCHSTUN : PlayerState.STANDARDSTUN;
         anim.SetBool("IsStunned", true);
 		velocity = direction * 0.3f;
 
@@ -742,10 +827,20 @@ public class KinematicPlayer : MonoBehaviour
 		Destroy(gameObject);
 	}
 
+	// run function in animation to spawn incense particles
+	public void LightIncenseTaunt()
+	{
+		GameObject smoke = Instantiate(incenseSmoke, transform.position + new Vector3(0.7f, -0.43f, 0), Quaternion.identity);
+	}
+
+	// run function in the animation to change back to move state
+	public void EndTaunt()
+	{
+		currentState = PlayerState.MOVE;
+	}
+
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if ((1 << collision.gameObject.layer) == LayerMask.GetMask("Ground"))	Debug.Log(collisionVelocity);
-
 		if (collision.gameObject.CompareTag("DeathCollider"))
 		{
 			if (gameObject)

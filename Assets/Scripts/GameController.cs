@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour {
 	[SerializeField] float freezeTimeDuration = 0.8f;
 
 	bool gameStarted = false;
+	public bool superPickUpActive = false;
 
 	Vector2 findSpawnPoint() {
 		List<Vector3> available = new List<Vector3>();

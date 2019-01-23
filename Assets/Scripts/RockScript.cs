@@ -34,10 +34,12 @@ public class RockScript : MonoBehaviour {
 	public float smallForce;
 	public float constForce;
 	public float destroyTime;
+	public int spawnPickUpPercent = 5;
 
 	[Header("Particles")]
 	public GameObject jumpDestroyParticles;
 	public GameObject superChargeFire;
+	public GameObject superPickUp;
 
     private Color startColor;
 	private Rigidbody2D rb2d;
@@ -62,6 +64,8 @@ public class RockScript : MonoBehaviour {
 	[HideInInspector]
 	public DestroyObject attachedObject;
 
+	GameController gc;
+
 	public int highlighted {
 		get {
 			return highlighted_;
@@ -81,6 +85,8 @@ public class RockScript : MonoBehaviour {
 		sr = GetComponent<SpriteRenderer>();
 		c2d = GetComponent<BoxCollider2D>();
 		rb2d = GetComponent<Rigidbody2D>();
+
+		gc = FindObjectOfType<GameController>();
 
 		projectileLayer = LayerMask.NameToLayer("Ground");
 		noColLayer = LayerMask.NameToLayer("NoColLayer");
@@ -233,6 +239,8 @@ public class RockScript : MonoBehaviour {
 	{
 		Instantiate(destroyParticles, transform.position, destroyParticles.transform.rotation);
 		AudioSource.PlayClipAtPoint(destroySound, transform.position, 10f);
+		TrySpawningPickUp();
+
 		Destroy(gameObject);
 	}
 
@@ -246,6 +254,17 @@ public class RockScript : MonoBehaviour {
 	IEnumerator DestroyNextFrame() {
 		yield return new WaitForEndOfFrame();
 		Destroy(gameObject);
+	}
+
+	void TrySpawningPickUp()
+	{
+		if (gc.superPickUpActive) return;
+
+		if (Random.Range(0, 100) < spawnPickUpPercent)
+		{
+			Instantiate(superPickUp, transform.position, Quaternion.identity);
+			gc.superPickUpActive = true;
+		}
 	}
 
 	void OnCollisionEnter2D(Collision2D other)

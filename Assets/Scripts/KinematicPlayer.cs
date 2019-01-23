@@ -92,6 +92,7 @@ public class KinematicPlayer : MonoBehaviour
 	//   > the next block we pick up, done in Grab()
 	//   > the next block we punch, done in Punch()
 	bool superPunchChargeTrigger = false;
+	bool hasSuperPunch = false;
 
 	[Header("References")]
 	public Transform wallChecker;
@@ -664,7 +665,11 @@ public class KinematicPlayer : MonoBehaviour
 		rockScript.getPushed(getAimingDirection(), this);
 
 		// lose superpunch when you punch a block
-		if (superPunchFire.isPlaying) superPunchFire.Stop();
+		if (hasSuperPunch)
+		{
+			superPunchFire.Stop();
+			hasSuperPunch = false;
+		}
 
 		// animation
         bool aimingUp = false;
@@ -793,27 +798,35 @@ public class KinematicPlayer : MonoBehaviour
 		if (currentState == PlayerState.BLOCK) 
 		{
 			velocity = direction * 0.3f;
-			blockNumber++;
+			if (!hasSuperPunch) blockNumber++;
 
 			// on third block, gain supercharge
 			if (blockNumber == 3)
 			{
-				superPunchFire.Play();
-				superPunchChargeTrigger = true;
-
-				// if we're holding a rock, set it to be super charged
-				if (grabbedRock)
-				{
-					grabbedRock.ChargeBlock();
-					superPunchChargeTrigger = false;
-				}
-
+				GainSuperCharge();
 				blockNumber = 0;
 			}
 
 			return;
 		}
 		StartCoroutine(Stun(-direction, superCharged));
+	}
+
+	void GainSuperCharge()
+	{
+		if (hasSuperPunch) return;
+
+		hasSuperPunch = true;
+
+		superPunchFire.Play();
+		superPunchChargeTrigger = true;
+
+		// if we're holding a rock, set it to be super charged
+		if (grabbedRock)
+		{
+			grabbedRock.ChargeBlock();
+			superPunchChargeTrigger = false;
+		}
 	}
 
 	IEnumerator Stun(Vector2 direction, bool superPunchStun)
@@ -872,6 +885,13 @@ public class KinematicPlayer : MonoBehaviour
 				// take damage and throw player based on health/percent
 				velocity.y = lavaBounceVelocity;
 			}
+		}
+
+		if (collision.CompareTag("SuperPickUp"))
+		{
+			GainSuperCharge();
+			gc.superPickUpActive = false;
+			Destroy(collision.gameObject);
 		}
 	}
 }

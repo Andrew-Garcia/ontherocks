@@ -9,6 +9,7 @@ TagManager:
   - Winner
   - DeathCollider
   - Lava
+  - SuperPickUp
   layers:
   - Default
   - TransparentFX

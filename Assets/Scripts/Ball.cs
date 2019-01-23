@@ -14,10 +14,19 @@ public class Ball : MonoBehaviour {
 
     [SerializeField] Rigidbody2D rigBod;
 
+	CircleCollider2D circleCol;
+	SpriteRenderer sr;
+
+
     Vector3 targetLoc;
     
     void Start () {
 		targetLoc = new Vector3(Random.Range(xMin, xMax), Random.Range(yMin, yMax), 0f);
+
+		circleCol = GetComponent<CircleCollider2D>();
+		sr = GetComponent<SpriteRenderer>();
+
+		StartCoroutine(OnSpawnBall());
 	}
 	
 	void Update () {
@@ -40,4 +49,20 @@ public class Ball : MonoBehaviour {
             targetLoc = new Vector3(Random.Range(xMin, xMax), Random.Range(yMin, yMax), 0f);
         }
     }
+
+	IEnumerator OnSpawnBall()
+	{
+		float i = 0;
+		while (i < 1)
+		{
+			i += Time.deltaTime / 1.5f;
+
+			if (i % 0.1f < 0.05f) sr.enabled = true;
+			else sr.enabled = false;
+
+			yield return null;
+		}
+
+		circleCol.enabled = true;
+	}
 }

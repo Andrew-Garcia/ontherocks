@@ -21,6 +21,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Sky - 2.unity
     guid: fc3ea7e3a97d6448a9c7c594cb025812
   - enabled: 1
+    path: Assets/Scenes/Sky - 3.unity
+    guid: 326d93bc827bf45c58bbb9ad73f0728b
+  - enabled: 1
     path: Assets/Scenes/Lava - 1.unity
     guid: 03a55e35309234d81a3df329faa091e4
+  - enabled: 1
+    path: Assets/Scenes/Lava - 2.unity
+    guid: 736acee04c3df422aa04ab75b9507c90
+  - enabled: 1
+    path: Assets/Scenes/Lava - 3.unity
+    guid: adc9fd56bfc50463386fd0fc3910ff47
   m_configObjects: {}

@@ -241,6 +241,8 @@ public class RockScript : MonoBehaviour {
 		AudioSource.PlayClipAtPoint(destroySound, transform.position, 10f);
 		TrySpawningPickUp();
 
+		if (attachedObject) attachedObject.DestoryObject();
+
 		Destroy(gameObject);
 	}
 

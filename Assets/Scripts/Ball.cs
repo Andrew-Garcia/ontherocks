@@ -17,6 +17,8 @@ public class Ball : MonoBehaviour {
 	CircleCollider2D circleCol;
 	SpriteRenderer sr;
 
+	Transform childSprite;
+	Quaternion childRot;
 
     Vector3 targetLoc;
     
@@ -24,7 +26,10 @@ public class Ball : MonoBehaviour {
 		targetLoc = new Vector3(Random.Range(xMin, xMax), Random.Range(yMin, yMax), 0f);
 
 		circleCol = GetComponent<CircleCollider2D>();
-		sr = GetComponent<SpriteRenderer>();
+		sr = GetComponentInChildren<SpriteRenderer>();
+
+		childSprite = transform.GetChild(0);
+		childRot = childSprite.rotation;
 
 		StartCoroutine(OnSpawnBall());
 	}
@@ -48,6 +53,8 @@ public class Ball : MonoBehaviour {
         {
             targetLoc = new Vector3(Random.Range(xMin, xMax), Random.Range(yMin, yMax), 0f);
         }
+
+		childSprite.rotation = childRot;
     }
 
 	IEnumerator OnSpawnBall()

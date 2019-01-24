@@ -832,6 +832,12 @@ public class KinematicPlayer : MonoBehaviour
 	IEnumerator Stun(Vector2 direction, bool superPunchStun)
 	{
 		currentState = superPunchStun ? PlayerState.SUPERPUNCHSTUN : PlayerState.STANDARDSTUN;
+
+		// this is so a super pickup doesn't spawn when you crash through blocks, since it's easy to chain pick ups together otherwise
+		bool resetPickUp = true;
+		if (gc.superPickUpActive) resetPickUp = false;
+		else gc.superPickUpActive = true;
+
         anim.SetBool("IsStunned", true);
 		velocity = direction * 0.3f;
 
@@ -839,6 +845,8 @@ public class KinematicPlayer : MonoBehaviour
 
 		currentState = PlayerState.MOVE;
         anim.SetBool("IsStunned", false);
+
+		if (resetPickUp) gc.superPickUpActive = false;
     }
 
 	public void PlayerDie()

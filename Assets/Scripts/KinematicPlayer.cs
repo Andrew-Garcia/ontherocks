@@ -253,13 +253,10 @@ public class KinematicPlayer : MonoBehaviour
 				}
 
 				// rock glide input
-				if (Input.GetButtonDown(getPlayerKey("RockGlide")) && !grounded && grabbedRock)
+				if (Input.GetButtonDown(getPlayerKey("RockMod")) && !grounded && grabbedRock)
 				{
 					currentState = PlayerState.ROCKGLIDE;
-
-					// set current rock to state with no physics
-					grabbedRock.currentState = RockScript.state.SCRIPTMOVE;
-
+					StartCoroutine(RockGlide());
 				}
 
 				// taunt input
@@ -285,11 +282,14 @@ public class KinematicPlayer : MonoBehaviour
 			case PlayerState.ROCKGLIDE:
 				velocity.x += Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed / 10;
 				if (Mathf.Abs(velocity.x) > speed) velocity.x = Mathf.Sign(velocity.x) * speed;
-				if (velocity.y < 0) velocity.y = -8;
+				if (velocity.y <= 0) velocity.y = -8;
 
-				grabbedRock.transform.position = transform.position;
+				if (Input.GetButtonDown(getPlayerKey("Jump")))
+				{
+					StartCoroutine(RockJump());
+				}
 
-				if (grounded || Input.GetButtonUp(getPlayerKey("RockGlide")))
+				if (grounded || Input.GetButtonUp(getPlayerKey("RockMod")))
 				{
 					currentState = PlayerState.MOVE;
 					grabbedRock.currentState = RockScript.state.HELD;
@@ -393,15 +393,6 @@ public class KinematicPlayer : MonoBehaviour
 				hitBufferList.Add(hitBuffer[i]);
 			}
 
-			// set collision velocity
-			/*
-			if (hitBufferList.Count > 0)
-			{
-				collisionVelocity = velocity;
-				//Debug.Log("hit");
-			}
-			*/
-
 			// in standard stun: when you hit a rock at a certain velocity, bounce off
 			if (currentState == PlayerState.STANDARDSTUN && hitBufferList.Count > 0) 
 			{
@@ -416,7 +407,6 @@ public class KinematicPlayer : MonoBehaviour
 
 				velocity /= 1.025f;
 			}
-			
 
 			// in superpunch stun: when you hit a rock, slow down
 			if (currentState == PlayerState.SUPERPUNCHSTUN && hitBufferList.Count > 0)
@@ -751,7 +741,7 @@ public class KinematicPlayer : MonoBehaviour
 		// set rock to state with no physics velocity
 		grabbedRock.currentState = RockScript.state.SCRIPTMOVE;
 
-		Vector3 rockEnd = transform.position - (grabbedRock.isBig ? new Vector3(1f, 1.375f) 
+		Vector3 rockEnd = transform.position - (grabbedRock.isBig ? new Vector3(1f, 0.75f) 
 			: new Vector3(0.5f, 0.875f));
 
 		Vector3 rockStart = grabbedRock.transform.position;
@@ -780,6 +770,38 @@ public class KinematicPlayer : MonoBehaviour
 		// reset velocity after jump
 		velocity = Vector2.zero;
 		currentState = PlayerState.MOVE;
+	}
+
+	IEnumerator RockGlide()
+	{
+		// set current rock to state with no physics
+		grabbedRock.currentState = RockScript.state.SCRIPTMOVE;
+
+		Vector3 offset = (grabbedRock.isBig ? new Vector3(1f, 0.75f)
+				: new Vector3(0.5f, 0.875f));
+
+		Vector3 rockEnd;
+
+		//Vector3 rockStart = grabbedRock.transform.position;
+
+		float i = 0;
+		// bring rock to under our feet
+		while (i < 1)
+		{
+			i += Time.deltaTime / 0.2f;
+
+			rockEnd = transform.position - offset;
+
+			grabbedRock.transform.position = Vector3.Lerp(grabbedRock.transform.position, rockEnd, i);
+
+			yield return null;
+		}
+
+		while (currentState == PlayerState.ROCKGLIDE)
+		{
+			grabbedRock.transform.position = transform.position - offset;
+			yield return null;
+		}
 	}
 
 	Vector3 getRockJumpDirection()

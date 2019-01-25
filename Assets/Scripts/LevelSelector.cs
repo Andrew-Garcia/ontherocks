@@ -136,7 +136,7 @@ public class LevelSelector : MonoBehaviour  {
             usingHAxis = false;
         }
 
-        if (Input.GetButtonDown("Player1Punch"))
+        if (Input.GetButtonDown("Player1Jump"))
         {
             if (playTypeIndex != 4)
             {
@@ -149,7 +149,7 @@ public class LevelSelector : MonoBehaviour  {
             DisplayPlayType();
         }
 
-        if (Input.GetButtonDown("Player1Jump"))
+        if (Input.GetButtonDown("Player1Punch"))
         {
             LoadLevel();
         }

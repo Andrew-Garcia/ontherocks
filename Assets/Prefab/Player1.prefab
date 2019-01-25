@@ -187,7 +187,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1905370455827948}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -13.92, y: -11.5, z: 0}
+  m_LocalPosition: {x: -28.99, y: -6.3725367, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4891254510253504}
@@ -303,19 +303,20 @@ MonoBehaviour:
   playerNumber: 1
   lavaBounceVelocity: 7
   deathClip: {fileID: 8300000, guid: 0af41e8082ce64f6593d672b47d973d7, type: 3}
-  stunTime: 0.5
+  stunTime: 0.6
   selectedRockTimer: 0.2
   damage: 0
-  speed: 12
-  jumpForce: 37
-  gravityModifier: 10
+  speed: 13
+  jumpForce: 34
+  gravityModifier: 8
   shellRadius: 0.01
   jumpTimer: 0.2
   coyoteTimer: 0.3
-  preRockJumpFrames: 5
+  preRockJumpFrames: 6
   rockJumpFrames: 5
   rockJumpSpeed: 100
-  blockFrames: 10
+  rockGlideFallSpeed: 5
+  blockFrames: 12
   wallChecker: {fileID: 4170250721874796}
   rayOrigin: {fileID: 4170680461037868}
   grabbedRocksPosition: {fileID: 4405870894078722}

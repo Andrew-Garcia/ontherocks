@@ -291,7 +291,7 @@ public class KinematicPlayer : MonoBehaviour
 			case PlayerState.ROCKGLIDE:
 				velocity.x += Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed / 10;
 
-				if (Input.GetAxisRaw(getPlayerKey("Horizontal")) == 0) velocity.x = 0;
+				if (Input.GetAxisRaw(getPlayerKey("Horizontal")) == 0) velocity.x /= 1.1f;
 
 				if (Mathf.Abs(velocity.x) > speed) velocity.x = Mathf.Sign(velocity.x) * speed;
 				if (velocity.y <= 0) velocity.y = -rockGlideFallSpeed;

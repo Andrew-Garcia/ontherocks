@@ -187,7 +187,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1905370455827948}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16.92, y: -5.5, z: 0}
+  m_LocalPosition: {x: -28.99, y: -6.3725367, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4891254510253504}
@@ -316,7 +316,7 @@ MonoBehaviour:
   rockJumpFrames: 5
   rockJumpSpeed: 100
   rockGlideFallSpeed: 5
-  blockFrames: 10
+  blockFrames: 12
   wallChecker: {fileID: 4170250721874796}
   rayOrigin: {fileID: 4170680461037868}
   grabbedRocksPosition: {fileID: 4405870894078722}

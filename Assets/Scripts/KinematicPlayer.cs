@@ -276,6 +276,12 @@ public class KinematicPlayer : MonoBehaviour
 					anim.SetTrigger("taunt2trigger");
 				}
 
+                //Pause button (+ or -); Loads level select menu
+                if (Input.GetButtonDown(getPlayerKey("Pause")))
+                {
+                    FindObjectOfType<LevelSelector>().LoadMenu();
+                }
+
 				break;
 
 			case PlayerState.ROCKJUMP:

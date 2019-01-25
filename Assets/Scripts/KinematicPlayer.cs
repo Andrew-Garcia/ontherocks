@@ -82,6 +82,9 @@ public class KinematicPlayer : MonoBehaviour
 	public int rockJumpFrames = 10;
 	public float rockJumpSpeed = 5f;
 
+	[Header("Rock Glide")]
+	public float rockGlideFallSpeed = 8;
+
 	[Header("Block")]
 	public int blockFrames = 15;
 	int blockNumber = 0;
@@ -282,7 +285,7 @@ public class KinematicPlayer : MonoBehaviour
 			case PlayerState.ROCKGLIDE:
 				velocity.x += Input.GetAxisRaw(getPlayerKey("Horizontal")) * speed / 10;
 				if (Mathf.Abs(velocity.x) > speed) velocity.x = Mathf.Sign(velocity.x) * speed;
-				if (velocity.y <= 0) velocity.y = -8;
+				if (velocity.y <= 0) velocity.y = -rockGlideFallSpeed;
 
 				if (Input.GetButtonDown(getPlayerKey("Jump")))
 				{
